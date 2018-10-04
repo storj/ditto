@@ -1,0 +1,3 @@
+1. Clone this repository.
+2. Run `glide install -v`
+3. Run `glide update`
