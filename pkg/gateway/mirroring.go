@@ -64,6 +64,7 @@ func (gw *Mirroring) NewGatewayLayer(creds auth.Credentials) (objLayer minio.Obj
 		Prime:  prime,
 		Alter:  alter,
 		Logger: gw.Logger,
+		Config: gw.Config,
 	}
 
 	return objLayer, nil

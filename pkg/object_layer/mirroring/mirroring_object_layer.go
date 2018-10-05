@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/minio/minio/pkg/hash"
 	"io"
+	"storj.io/ditto/pkg/config"
 	"storj.io/ditto/utils"
 
 	minio "github.com/minio/minio/cmd"
@@ -15,6 +16,7 @@ type MirroringObjectLayer struct {
 	Prime  minio.ObjectLayer
 	Alter  minio.ObjectLayer
 	Logger utils.Logger
+	Config *config.Config
 }
 
 //ObjectLayer interface---------------------------------------------------------------------------------------------------------------------
@@ -40,21 +42,9 @@ func (m *MirroringObjectLayer) MakeBucketWithLocation(ctx context.Context, bucke
 // bucket - bucket name.
 func (m *MirroringObjectLayer) GetBucketInfo(ctx context.Context, bucket string) (bucketInfo minio.BucketInfo, err error) {
 
-	bucketInfo, errPrime := m.Prime.GetBucketInfo(ctx, bucket)
+	h := NewGetBucketInfoHandler(m, ctx, bucket)
 
-	if errPrime == nil {
-		return
-	}
-
-	bucketInfo, err = m.Alter.GetBucketInfo(ctx, bucket)
-
-	//m.Logger.Err = utils.CombineErrors([]error{errPrime, err})
-
-	if err != nil {
-		err = utils.CombineErrors([]error{errPrime, err})
-	}
-
-	return
+	return h.Process()
 }
 
 // Returns a list of all buckets.

@@ -13,6 +13,7 @@ type MockLogger struct {
 
 func (l *MockLogger) getLogParam(i int) (string, error) {
 	length := len(l.logParams)
+
 	if i < 0 || i > length - 1 {
 		return "", indexOutOfBoundError
 	}
@@ -22,6 +23,7 @@ func (l *MockLogger) getLogParam(i int) (string, error) {
 
 func (l *MockLogger) getLogEParam(i int) (error, error) {
 	length := len(l.logEParams)
+
 	if i < 0 || i > length - 1 {
 		return nil, indexOutOfBoundError
 	}
