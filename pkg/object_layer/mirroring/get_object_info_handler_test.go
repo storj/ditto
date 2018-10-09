@@ -13,7 +13,7 @@ import (
 	test "storj.io/ditto/utils/testing_utils"
 )
 
-func TestGetBucketInfoHandler(t *testing.T) {
+func TestGetObjectInfoHandler(t *testing.T) {
 
 	prime := test.NewProxyObjectLayer()
 	alter := test.NewProxyObjectLayer()
@@ -36,11 +36,12 @@ func TestGetBucketInfoHandler(t *testing.T) {
 			testFunc: func() {
 				isAlterCalled := false
 
-				h := NewGetBucketInfoHandler(&m, context.Background(), "src_bucket")
+				h := NewGetObjectInfoHandler(&m, context.Background(), "bucket", "object", minio.ObjectOptions{})
 
-				alter.GetBucketInfoFunc = func(ctx context.Context, bucket string) (objInfo minio.BucketInfo, err error) {
+				alter.GetObjectInfoFunc = func(ctx context.Context, bucket, object string, opts minio.ObjectOptions) (objInfo minio.ObjectInfo, err error) {
 					isAlterCalled = true
-					return minio.BucketInfo{},nil
+
+					return minio.ObjectInfo{},nil
 				}
 
 				h.Process()
@@ -56,21 +57,27 @@ func TestGetBucketInfoHandler(t *testing.T) {
 			testFunc: func() {
 				isAlterCalled := false
 
-				h := NewGetBucketInfoHandler(&m, context.Background(), "src_bucket")
+				h := NewGetObjectInfoHandler(&m, context.Background(), "bucket", "object", minio.ObjectOptions{})
 
-				prime.GetBucketInfoFunc = func(ctx context.Context, bucket string) (objInfo minio.BucketInfo, err error) {
-					return minio.BucketInfo{}, errors.New("prime failed")
+				prime.GetObjectInfoFunc = func(ctx context.Context, bucket, object string, opts minio.ObjectOptions) (objInfo minio.ObjectInfo, err error) {
+					return minio.ObjectInfo{}, errors.New("prime failed")
 				}
 
-				alter.GetBucketInfoFunc = func(ctx context.Context, bucket string) (objInfo minio.BucketInfo, err error) {
+				alter.GetObjectInfoFunc = func(ctx context.Context, bucket, object string, opts minio.ObjectOptions) (objInfo minio.ObjectInfo, err error) {
 					isAlterCalled = true
-					return minio.BucketInfo{},nil
+					return minio.ObjectInfo{},nil
 				}
 
 				h.Process()
 
+				logPrimeErr, _ := logger.GetLastLogEParam()
+
+				assert.NotNil(t, h.primeErr)
 				assert.NotNil(t, h.primeErr)
 				assert.Nil(t, h.alterErr)
+				assert.NotNil(t, logPrimeErr)
+				assert.Error(t, logPrimeErr)
+				assert.Equal(t, "prime failed", logPrimeErr.Error())
 				assert.Equal(t, true, isAlterCalled)
 			},
 		},
@@ -110,3 +117,4 @@ func TestGetBucketInfoHandler(t *testing.T) {
 		})
 	}
 }
+
