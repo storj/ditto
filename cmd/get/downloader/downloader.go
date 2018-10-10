@@ -39,7 +39,7 @@ func (d *downloader) SetParams(prms Params) {
 func (d *downloader) GetBucket(bucketName string) (err error) {
 	loi, err := d.listObjects(nil, *d.prms, bucketName)
 	if err != nil {
-		d.logf("Failed to get files list from bucket %s\n", bucketName)
+		d.logf("Failed to get files list_cmd from bucket %s\n", bucketName)
 		return
 	}
 

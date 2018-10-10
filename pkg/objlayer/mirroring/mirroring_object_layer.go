@@ -48,7 +48,7 @@ func (m *MirroringObjectLayer) GetBucketInfo(ctx context.Context, bucket string)
 	return h.Process()
 }
 
-// Returns a list of all buckets.
+// Returns a list_cmd of all buckets.
 // Parameters:
 // ctx - current context.
 func (m *MirroringObjectLayer) ListBuckets(ctx context.Context) (buckets []minio.BucketInfo, err error) {
@@ -120,7 +120,7 @@ func (m *MirroringObjectLayer) ListObjects(ctx context.Context,
 // prefix  - Limits the response to keys that begin with the specified prefix.
 // cntnTkn - when the response to this API call is truncated (that is, the IsTruncated response element value is true),
 // 			 the response also includes the NextContinuationToken element.
-// 			 To list the next set of objects, you can use the NextContinuationToken element in the next request as the continuation-token.
+// 			 To list_cmd the next set of objects, you can use the NextContinuationToken element in the next request as the continuation-token.
 // 			 Amazon S3 returns object keys in UTF-8 binary order, starting with key after the marker in order.
 // delim   - is a character you use to group keys.
 // maxKeys - Sets the maximum number of keys returned in the response body.

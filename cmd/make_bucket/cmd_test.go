@@ -5,6 +5,7 @@ package make_bucket
 
 import (
 	"context"
+	"github.com/minio/minio/cmd"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -78,8 +79,7 @@ func TestValidateArgs(t *testing.T) {
 
 func TestExec(t *testing.T) {
 
-	prime := test.NewProxyObjectLayer()
-	mirroring = prime
+	prime := test.NewProxyObjectLayer
 
 	cases := []struct {
 		testName string
@@ -91,9 +91,12 @@ func TestExec(t *testing.T) {
 			testFunc: func() {
 
 				makeBucketErrorString := "MakeBucketWithLocation failed"
-
-				prime.MakeBucketWithLocationFunc = func (ctx context.Context, bucket string, location string) (err error) {
-					return errors.New(makeBucketErrorString)
+				mirroring = func() (cmd.ObjectLayer, error) {
+					proxyObj := prime()
+					proxyObj.MakeBucketWithLocationFunc = func(ctx context.Context, bucket string, location string) (err error) {
+						return errors.New(makeBucketErrorString)
+					}
+					return proxyObj, nil
 				}
 
 				err := exec(nil, []string{"-flag"})
@@ -107,8 +110,13 @@ func TestExec(t *testing.T) {
 
 			testFunc: func() {
 
-				prime.MakeBucketWithLocationFunc = func (ctx context.Context, bucket string, location string) (err error) {
-					return nil
+				mirroring = func() (cmd.ObjectLayer, error) {
+					proxyObj := prime()
+					proxyObj.MakeBucketWithLocationFunc = func(ctx context.Context, bucket string, location string) (err error) {
+						return nil
+					}
+
+					return proxyObj, nil
 				}
 
 				err := exec(nil, []string{"-flag"})

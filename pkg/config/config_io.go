@@ -1,14 +1,15 @@
 package config
 
 import (
+	"encoding/json"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
 
 // Reads config from default config location($HOME/.ditto/config.json or from user-defined location
 // Returns parsed config or error
-func ReadDefaultConfig() (config *Config, err error) {
-	config, err = parseConfig()
+func ReadDefaultConfig(useDefaults bool) (config *Config, err error) {
+	config, err = parseConfig(useDefaults)
 
 	if err != nil {
 		println(err.Error())
@@ -18,17 +19,17 @@ func ReadDefaultConfig() (config *Config, err error) {
 	if config.Server1 == nil || config.Server1.IsEmpty() ||
 		config.Server2 == nil || config.Server2.IsEmpty() {
 
-		return nil, errors.New("Credentials are not set. Please run config setup")
+		return nil, errors.New("Credentials are not set. Please define credentials with `ditto config set`")
 	}
 
-	// bytes, _ := json.MarshalIndent(config, "", "\t")
-	// println(string(bytes))
+	bytes, _ := json.MarshalIndent(config, "", "\t")
+	println(string(bytes))
 
 	return config, nil
 }
 
 // Gather config values and applies default values
-func parseConfig() (config *Config, err error) {
+func parseConfig(useDefaults bool) (config *Config, err error) {
 	if viper.IsSet("configPath") {
 		viper.SetConfigFile(viper.GetString("configPath"))
 	} else {
@@ -37,9 +38,15 @@ func parseConfig() (config *Config, err error) {
 		viper.SetConfigType("json")
 	}
 
-	setDefaults()
-	viper.AutomaticEnv()
-	viper.ReadInConfig()
+	if useDefaults {
+		setDefaults()
+	}
+
+	// viper.AutomaticEnv()
+	err = viper.ReadInConfig()
+	if err != nil {
+		return nil, err
+	}
 
 	err = viper.Unmarshal(&config)
 	if err != nil {
@@ -51,28 +58,28 @@ func parseConfig() (config *Config, err error) {
 
 func setDefaults() {
 	// Root defaults
-	viper.SetDefault("DefaultOptions.DefaultSource", "server1")
-	viper.SetDefault("ThrowImmediately", true)
+	viper.SetDefault(DEFAULT_OPTIONS_DEFAULT_SOURCE, "server1")
+	viper.SetDefault(DEFAULT_OPTIONS_THROW_IMMEDIATELY, true)
 
 	// ListOptions defaults
-	viper.SetDefault("ListOptions.DefaultOptions.DefaultSource", "server1")
-	viper.SetDefault("ListOptions.DefaultOptions.ThrowImmediately", false)
-	viper.SetDefault("ListOptions.Merge", false)
+	viper.SetDefault(LIST_DEFAULT_SOURCE, "server2")
+	viper.SetDefault(LIST_THROW_IMMEDIATELY, false)
+	viper.SetDefault(LIST_MERGE, false)
 
 	// PutOptions defaults
-	viper.SetDefault("PutOptions.DefaultOptions.DefaultSource", "server1")
-	viper.SetDefault("PutOptions.DefaultOptions.ThrowImmediately", false)
-	viper.SetDefault("PutOptions.CreateBucketIfNotExist", true)
+	viper.SetDefault(PUT_DEFAULT_SOURCE, "server1")
+	viper.SetDefault(PUT_THROW_IMMEDIATELY, false)
+	viper.SetDefault(PUT_CREATE_BUCKET_IF_NOT_EXIST, true)
 
 	// GetObjectOptions defaults
-	viper.SetDefault("GetObjectOptions.DefaultOptions.DefaultSource", "server2")
-	viper.SetDefault("GetObjectOptions.DefaultOptions.ThrowImmediately", false)
+	viper.SetDefault(GET_OBJECT_DEFAULT_SOURCE, "server2")
+	viper.SetDefault(GET_OBJECT_THROW_IMMEDIATELY, false)
 
 	// CopyOptions defaults
-	viper.SetDefault("CopyOptions.DefaultOptions.DefaultSource", "server1")
-	viper.SetDefault("CopyOptions.DefaultOptions.ThrowImmediately", true)
+	viper.SetDefault(COPY_DEFAULT_SOURCE, "server1")
+	viper.SetDefault(COPY_THROW_IMMEDIATELY, true)
 
 	// DeleteOptions defaults
-	viper.SetDefault("DeleteOptions.DefaultOptions.DefaultSource", "server1")
-	viper.SetDefault("DeleteOptions.DefaultOptions.ThrowImmediately", true)
+	viper.SetDefault(DELETE_DEFAULT_SOURCE, "server1")
+	viper.SetDefault(DELETE_THROW_IMMEDIATELY, true)
 }

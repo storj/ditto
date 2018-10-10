@@ -21,8 +21,8 @@ var mirroring = utils.GetObjectLayer
 var configuration *config.Config
 var Cmd = &cobra.Command{
 	Use:   "list",
-	Short: "Displays bucket list and all files at specified bucket",
-	Long:  `Displays bucket list and all files at specified bucket`,
+	Short: "Displays bucket list_cmd and all files at specified bucket",
+	Long:  `Displays bucket list_cmd and all files at specified bucket`,
 	Args:  validateArgs,
 	RunE:  exec,
 }
@@ -51,7 +51,7 @@ func exec(cmd *cobra.Command, args []string) error {
 }
 
 func listBuckets(layer minio.ObjectLayer) error {
-	fmt.Println("list buckets:")
+	fmt.Println("list_cmd buckets:")
 
 	buckets, err := layer.ListBuckets(context.Background())
 
@@ -70,7 +70,7 @@ func listBuckets(layer minio.ObjectLayer) error {
 }
 
 func listObjects(layer minio.ObjectLayer, bucketName string) error {
-	fmt.Printf("list files at %s\n", bucketName)
+	fmt.Printf("list_cmd files at %s\n", bucketName)
 
 	u, err := url.Parse(bucketName)
 	if err != nil {

@@ -12,7 +12,7 @@ import (
 	"storj.io/ditto/cmd/utils"
 )
 
-var mirroring, _ = utils.GetObjectLayer()
+var mirroring = utils.GetObjectLayer
 
 var Cmd = &cobra.Command {
 	Use: "make-bucket [mb].",
@@ -26,7 +26,12 @@ var Cmd = &cobra.Command {
 func exec(cmd *cobra.Command, args []string) error {
 
 	//TODO: add location flag in init func
-	err := mirroring.MakeBucketWithLocation(context.Background(), args[0], "")
+	objLayer, err := mirroring()
+	if err != nil {
+		return err
+	}
+
+	err = objLayer.MakeBucketWithLocation(context.Background(), args[0], "")
 
 	if err != nil {
 		return err

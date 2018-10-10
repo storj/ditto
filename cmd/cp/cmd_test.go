@@ -5,7 +5,7 @@ package cp
 
 import (
 	"context"
-	"github.com/minio/minio/cmd"
+	minio "github.com/minio/minio/cmd"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -93,7 +93,7 @@ func TestValidateArgs(t *testing.T) {
 
 				assert.Error(t, err)
 				assert.NotNil(t, err)
-				assert.Equal(t, expectedErrorMessage , err.Error())
+				assert.Equal(t, expectedErrorMessage, err.Error())
 			},
 		},
 		{
@@ -107,7 +107,7 @@ func TestValidateArgs(t *testing.T) {
 
 				assert.Error(t, err)
 				assert.NotNil(t, err)
-				assert.Equal(t, expectedErrorMessage , err.Error())
+				assert.Equal(t, expectedErrorMessage, err.Error())
 			},
 		},
 		{
@@ -119,10 +119,9 @@ func TestValidateArgs(t *testing.T) {
 
 				assert.Error(t, err)
 				assert.NotNil(t, err)
-				assert.Equal(t, expectedErrorMessage , err.Error())
+				assert.Equal(t, expectedErrorMessage, err.Error())
 			},
 		},
-
 	}
 
 	for _, c := range cases {
@@ -134,8 +133,7 @@ func TestValidateArgs(t *testing.T) {
 
 func TestExec(t *testing.T) {
 
-	proxy := test.NewProxyObjectLayer()
-	mirroring = proxy
+	proxy := test.NewProxyObjectLayer
 
 	cases := []struct {
 		testName string
@@ -148,8 +146,13 @@ func TestExec(t *testing.T) {
 
 				copyObjectErrorString := "CopyObject failed"
 
-				proxy.CopyObjectFunc = func(ctx context.Context, srcBucket, srcObject, destBucket, destObject string, srcInfo cmd.ObjectInfo, srcOpts, dstOpts cmd.ObjectOptions) (objInfo cmd.ObjectInfo, err error) {
-					return objInfo, errors.New(copyObjectErrorString)
+				mirroring = func() (minio.ObjectLayer, error) {
+					proxyObjectLayer := proxy()
+					proxyObjectLayer.CopyObjectFunc = func(ctx context.Context, srcBucket, srcObject, destBucket, destObject string, srcInfo minio.ObjectInfo, srcOpts, dstOpts minio.ObjectOptions) (objInfo minio.ObjectInfo, err error) {
+						return objInfo, errors.New(copyObjectErrorString)
+					}
+
+					return proxyObjectLayer, nil
 				}
 
 				err := exec(nil, []string{"srcBucket", "srcObj", "dstBucket"})
@@ -163,8 +166,12 @@ func TestExec(t *testing.T) {
 			testName: "CopyObject success",
 
 			testFunc: func() {
-				proxy.CopyObjectFunc = func(ctx context.Context, srcBucket, srcObject, destBucket, destObject string, srcInfo cmd.ObjectInfo, srcOpts, dstOpts cmd.ObjectOptions) (objInfo cmd.ObjectInfo, err error) {
-					return objInfo, nil
+				mirroring = func() (minio.ObjectLayer, error) {
+					proxyObjLayer := proxy()
+					proxyObjLayer.CopyObjectFunc = func(ctx context.Context, srcBucket, srcObject, destBucket, destObject string, srcInfo minio.ObjectInfo, srcOpts, dstOpts minio.ObjectOptions) (objInfo minio.ObjectInfo, err error) {
+						return objInfo, nil
+					}
+					return proxyObjLayer, nil
 				}
 
 				err := exec(nil, []string{"srcBucket", "srcObj", "dstBucket"})

@@ -14,7 +14,7 @@ import (
 	"storj.io/ditto/pkg/utils"
 )
 
-var mirroring, _ = cmdUtils.GetObjectLayer()
+var mirroring = cmdUtils.GetObjectLayer
 var missingArgsErrorMessage = "at least three arguments required."
 
 var Cmd = &cobra.Command {
@@ -30,8 +30,12 @@ var Cmd = &cobra.Command {
 func exec(cmd *cobra.Command, args []string) error {
 
 	ctx := context.Background()
+	objectLayer, err := mirroring()
 
-	objectInfo, _ := mirroring.GetObjectInfo(ctx, args[0], args[1], minio.ObjectOptions{})
+	if err != nil {
+		return err
+	}
+	objectInfo, _ := objectLayer.GetObjectInfo(ctx, args[0], args[1], minio.ObjectOptions{})
 
 	dstObj := args[1]
 
@@ -40,7 +44,7 @@ func exec(cmd *cobra.Command, args []string) error {
 	}
 
 	//TODO: enable object options in future
-	_, err := mirroring.CopyObject(ctx, args[0], args[1], args[2], dstObj, objectInfo, minio.ObjectOptions{}, minio.ObjectOptions{})
+	_, err = objectLayer.CopyObject(ctx, args[0], args[1], args[2], dstObj, objectInfo, minio.ObjectOptions{}, minio.ObjectOptions{})
 
 	if err != nil {
 		return err

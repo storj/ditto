@@ -4,8 +4,6 @@
 package config
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
@@ -13,10 +11,7 @@ import (
 var Cmd = &cobra.Command{
 	Use:   "config",
 	Short: "Mirroring options setup",
-	Long: ``,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("config called")
-	},
+	Long:  `Long description`,
 }
 
 func init() {

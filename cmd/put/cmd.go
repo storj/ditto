@@ -9,12 +9,13 @@ import (
 	l "storj.io/ditto/pkg/logger"
 )
 
+
 // Cmd represents the put command
 var Cmd = &cobra.Command{
 	Use: "put [bucket name] [path to file/folder]",
 	Args:    validateArgs,
-	Short:   "Upload files or file list to specified bucket",
-	Long:    `Upload files or file list to specified bucket`,
+	Short:   "Upload files or file list_cmd to specified bucket",
+	Long:    `Upload files or file list_cmd to specified bucket`,
 	RunE:    NewPutExec(&gw.Mirroring{Logger:&l.StdOutLogger}, &l.StdOutLogger).runE,
 }
 

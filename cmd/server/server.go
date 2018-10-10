@@ -9,9 +9,9 @@ var Cmd = &cobra.Command{
 	Use: "server",
 
 	Args:  nil,
-	Short: "Upload files or file list to specified bucket",
+	Short: "Upload files or file list_cmd to specified bucket",
 	PreRunE: preRunE,
-	Long: `Upload files or file list to specified bucket`,
+	Long: `Upload files or file list_cmd to specified bucket`,
 	Run:  run,
 }
 
