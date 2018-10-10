@@ -2,7 +2,7 @@ package put
 
 import (
 	"testing"
-	tutils "storj.io/ditto/utils/testing_utils"
+	tutils "storj.io/ditto/pkg/utils/testing_utils"
 	minio "github.com/minio/minio/cmd"
 	"context"
 	"github.com/minio/minio/pkg/hash"

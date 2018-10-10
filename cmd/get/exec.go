@@ -1,21 +1,22 @@
 package get
 
 import (
-	"github.com/spf13/cobra"
-	minio "github.com/minio/minio/cmd"
-	"storj.io/ditto/utils"
-	"github.com/minio/minio/pkg/auth"
 	"context"
+	"github.com/minio/minio/pkg/auth"
+	"github.com/spf13/cobra"
 	"os"
-	)
 
-func newGetExec(gw minio.Gateway, lg utils.Logger) *getExec {
+	l "storj.io/ditto/pkg/logger"
+	minio "github.com/minio/minio/cmd"
+)
+
+func newGetExec(gw minio.Gateway, lg l.Logger) *getExec {
 	return &getExec{gw, lg}
 }
 
 type getExec struct {
 	minio.Gateway
-	utils.Logger
+	l.Logger
 }
 
 func (e *getExec) runE(cmd *cobra.Command, args []string) (err error) {

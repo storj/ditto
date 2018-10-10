@@ -1,29 +1,30 @@
 package put
 
 import (
-	"storj.io/ditto/utils"
-	futils "storj.io/ditto/cmd/utils"
-	"fmt"
-	"path"
-	"os"
 	"context"
+	"fmt"
 	"github.com/minio/minio/pkg/auth"
 	"github.com/spf13/cobra"
+	"os"
+	"path"
+
+	futils "storj.io/ditto/cmd/utils"
+	l "storj.io/ditto/pkg/logger"
 	minio "github.com/minio/minio/cmd"
 )
 
 type putExec struct {
 	gw minio.Gateway
-	logger utils.Logger
+	logger l.Logger
 	ObjLayerAsyncUploader
 }
 
-func NewPutExec(gw minio.Gateway, logger utils.Logger) putExec {
+func NewPutExec(gw minio.Gateway, logger l.Logger) putExec {
 	uploader := NewFolderUploader(nil, NewHFileReader(), &dirReader{}, logger)
 	return newPutExec(gw, uploader, logger)
 }
 
-func newPutExec(gw minio.Gateway, uploader ObjLayerAsyncUploader, logger utils.Logger) putExec {
+func newPutExec(gw minio.Gateway, uploader ObjLayerAsyncUploader, logger l.Logger) putExec {
 	return putExec{gw, logger, uploader }
 }
 
@@ -76,12 +77,12 @@ func (e putExec) runE(cmd *cobra.Command, args []string) error {
 	tnum := 1
 	for i:= 0; i < tnum; i++ {
 		select {
-		case err = <-errc:
-			e.logger.LogE(err)
-		case sig := <-sigc:
-			e.logF("Catched interrupt! %s\n", sig)
-			cancelf()
-			tnum++
+			case err = <-errc:
+				e.logger.LogE(err)
+			case sig := <-sigc:
+				e.logF("caught interrupt! %s\n", sig)
+				cancelf()
+				tnum++
 		}
 	}
 

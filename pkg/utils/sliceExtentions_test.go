@@ -24,6 +24,7 @@ func TestListBucketsWithDifference(t *testing.T) {
 	fmt.Println(result)
 }
 
+//TODO: implement full test
 func TestListObjectsWithDifference(t *testing.T) {
 
 	var mainSlice []minio.ObjectInfo
@@ -62,6 +63,7 @@ func TestListObjectsWithDifference(t *testing.T) {
 	fmt.Println(result)
 }
 
+//TODO: implement full test
 func TestCombineBucketsDistinct(t *testing.T) {
 	var mainSlice []minio.BucketInfo
 	var mirrorSlice []minio.BucketInfo

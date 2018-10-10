@@ -6,6 +6,9 @@ const (
 	IN_MAIN DiffBitmask = 1 << iota
 	IN_MIRROR
 	NAME
+	SIZE
+	CONTENT_TYPE
+	IS_DIR
 )
 
 //HasFlag is

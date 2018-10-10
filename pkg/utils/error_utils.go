@@ -6,17 +6,21 @@ import (
 )
 
 //CombineErrors will combine all error messages from error array in a single error
+//Params:
+//erray     - slice of errors to combine
+//Returns   - new error
 func CombineErrors(erray []error) (err error) {
-	if erray == nil || len(erray) == 0 {
+	length := len(erray)
+
+	if erray == nil || length == 0 {
 		return nil
 	}
 
-	length := len(erray)
 	var errorStrings []string
 
 	for i := 0; i < length; i++ {
 		if erray[i] != nil {
-			errorStrings = append(errorStrings, /*getErrorSource(i) + */ erray[i].Error())
+			errorStrings = append(errorStrings, erray[i].Error())
 		}
 	}
 
@@ -39,16 +43,4 @@ func NewError(err error, message string) error {
 	}
 
 	return errors.New(message + err.Error())
-}
-
-func getErrorSource(iteration int) string {
-
-	switch iteration {
-		case 0:
-			return "Error from prime server "
-		case 1:
-			return "Error from alter server "
-		default:
-			return ""
-	}
 }

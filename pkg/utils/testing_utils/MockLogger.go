@@ -64,6 +64,10 @@ func (l *MockLogger) GetLastLogEParam() (error, error) {
 
 	return l.getLogEParam(len(l.logEParams) - 1)
 }
+func (l *MockLogger) Clear() {
+	l.logEParams = []error{}
+	l.logParams = []string{}
+}
 
 
 

@@ -1,15 +1,15 @@
 package gateway
 
 import (
+	"errors"
 	"github.com/minio/cli"
 	"github.com/minio/minio/pkg/auth"
 	"storj.io/ditto/pkg/config"
-	"storj.io/ditto/pkg/object_layer/mirroring"
-	"storj.io/ditto/utils"
+	"storj.io/ditto/pkg/objlayer/mirroring"
 
 	minio "github.com/minio/minio/cmd"
-	s3 "storj.io/ditto/pkg/object_layer/s3compat"
-	"errors"
+	l "storj.io/ditto/pkg/logger"
+	s3 "storj.io/ditto/pkg/objlayer/s3compat"
 )
 
 func init() {
@@ -31,7 +31,7 @@ func mirroringGatewayMain(ctx *cli.Context) {
 // Mirroring for mirroring service
 type Mirroring struct {
 	Config *config.Config
-	Logger utils.Logger
+	Logger l.Logger
 }
 
 // Name implements minio.Gateway interface

@@ -1,17 +1,17 @@
-// Copyright (C) 2018 Storj Labs, Inc.
+// Copyright (C) 2018 Storj Labs, Inc.l "storj.io/ditto/pkg/logger"
 // See LICENSE for copying information.
 
 package get
 
 import (
+	"errors"
 	"fmt"
+	"github.com/minio/minio/pkg/auth"
 	"github.com/spf13/cobra"
+	"storj.io/ditto/cmd/get/downloader"
 	"storj.io/ditto/global"
 	gw "storj.io/ditto/pkg/gateway"
-	"github.com/minio/minio/pkg/auth"
-	"storj.io/ditto/cmd/get/downloader"
-	"storj.io/ditto/utils"
-	"errors"
+	l "storj.io/ditto/pkg/logger"
 )
 
 // getCmd represents the get command
@@ -20,7 +20,7 @@ var Cmd = &cobra.Command{
 	Args: validateArgs,
 	Short: "Download files and buckets",
 	Long: ``,
-	RunE: newGetExec(&gw.Mirroring{nil, &utils.StdOutLogger}, &utils.StdOutLogger).runE,
+	RunE: newGetExec(&gw.Mirroring{nil, &l.StdOutLogger}, &l.StdOutLogger).runE,
 }
 
 func runE(cmd *cobra.Command, args []string) error {
@@ -38,7 +38,7 @@ func runE(cmd *cobra.Command, args []string) error {
 		return errors.New("unable to get current working directory")
 	}
 
-	var mirrGateway gw.Mirroring = gw.Mirroring{Logger: &utils.StdOutLogger}
+	var mirrGateway gw.Mirroring = gw.Mirroring{Logger: &l.StdOutLogger}
 
 	var mirr, err =  mirrGateway.NewGatewayLayer(auth.Credentials{})
 	if err != nil {

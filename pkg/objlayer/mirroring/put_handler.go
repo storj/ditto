@@ -1,11 +1,11 @@
 package mirroring
 
 import (
-	"io"
-	"github.com/minio/minio/pkg/hash"
 	"context"
-	"storj.io/ditto/utils"
 	minio "github.com/minio/minio/cmd"
+	"github.com/minio/minio/pkg/hash"
+	"io"
+	l "storj.io/ditto/pkg/logger"
 )
 
 type asyncHandler struct {
@@ -29,10 +29,10 @@ func (h *asyncHandler) putAsync(ctx context.Context, oi *minio.ObjectInfo, bucke
 
 type putHandler struct {
 	main, mirr asyncHandler
-	logger utils.Logger
+	logger l.Logger
 }
 
-func newPutHandler(main, mirr minio.ObjectLayer, lg utils.Logger) *putHandler {
+func newPutHandler(main, mirr minio.ObjectLayer, lg l.Logger) *putHandler {
 	return &putHandler{asyncHandler{main}, asyncHandler{mirr}, lg}
 }
 

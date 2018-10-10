@@ -5,8 +5,9 @@ import (
 	"github.com/minio/minio/pkg/hash"
 	"io"
 	"storj.io/ditto/pkg/config"
-	"storj.io/ditto/utils"
+	"storj.io/ditto/pkg/utils"
 
+	l "storj.io/ditto/pkg/logger"
 	minio "github.com/minio/minio/cmd"
 )
 
@@ -15,7 +16,7 @@ type MirroringObjectLayer struct {
 	minio.GatewayUnsupported
 	Prime  minio.ObjectLayer
 	Alter  minio.ObjectLayer
-	Logger utils.Logger
+	Logger l.Logger
 	Config *config.Config
 }
 
@@ -52,10 +53,9 @@ func (m *MirroringObjectLayer) GetBucketInfo(ctx context.Context, bucket string)
 // ctx - current context.
 func (m *MirroringObjectLayer) ListBuckets(ctx context.Context) (buckets []minio.BucketInfo, err error) {
 
-	primeBuckets, errPrime := m.Prime.ListBuckets(ctx)
-	alterBuckets, errAlter := m.Alter.ListBuckets(ctx)
+	h := NewListBucketsHandler(m, ctx)
 
-	return m.processBucketList(primeBuckets, alterBuckets, errPrime, errAlter)
+	return h.Process()
 }
 
 // Deletes the bucket named in the URI.
@@ -186,21 +186,9 @@ func (m *MirroringObjectLayer) GetObjectInfo(ctx    context.Context,
 											 object string,
 											 opts   minio.ObjectOptions) (objInfo minio.ObjectInfo, err error) {
 
-	objInfo, errPrime := m.Prime.GetObjectInfo(ctx, bucket, object, opts)
+	h := NewGetObjectInfoHandler(m, ctx, bucket, object, opts)
 
-	if errPrime == nil {
-		return
-	}
-
-	objInfo, err = m.Alter.GetObjectInfo(ctx, bucket, object, opts)
-
-	// m.Logger.Err = utils.CombineErrors([]error{errPrime, err})
-
-	if err != nil {
-		err = utils.CombineErrors([]error{errPrime, err})
-	}
-
-	return
+	return h.Process()
 }
 
 // PutObject adds an object to a bucket.
@@ -349,9 +337,10 @@ func initializeListObjectsV2Info(prime minio.ListObjectsV2Info,
 }
 
 func initializeListObjectsInfo(prime minio.ListObjectsInfo,
-	alter minio.ListObjectsInfo,
-	objects []minio.ObjectInfo,
-	errPrime error) (result minio.ListObjectsInfo) {
+							   alter minio.ListObjectsInfo,
+							   objects []minio.ObjectInfo,
+
+							   errPrime error) (result minio.ListObjectsInfo) {
 
 	result = minio.ListObjectsInfo{}
 

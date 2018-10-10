@@ -1,11 +1,11 @@
 package put
 
 import (
-	"path"
-	"storj.io/ditto/utils"
-
-	minio "github.com/minio/minio/cmd"
 	"fmt"
+	"path"
+
+	l "storj.io/ditto/pkg/logger"
+	minio "github.com/minio/minio/cmd"
 )
 
 type AsyncUploader interface {
@@ -21,10 +21,10 @@ type ObjLayerAsyncUploader interface {
 type folderUploader struct {
 	fileUploader
 	DirReader
-	utils.Logger
+	l.Logger
 }
 
-func NewFolderUploader(ol minio.ObjectLayer, hr *hFileReader, dr DirReader, lg utils.Logger) *folderUploader {
+func NewFolderUploader(ol minio.ObjectLayer, hr *hFileReader, dr DirReader, lg l.Logger) *folderUploader {
 	return &folderUploader{fileUploader{objectUploader{ol}, hr}, dr, lg}
 }
 

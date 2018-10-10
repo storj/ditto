@@ -2,12 +2,11 @@ package utils
 
 import (
 	minio "github.com/minio/minio/cmd"
-	"storj.io/ditto/models"
-	"fmt"
+	"storj.io/ditto/pkg/models"
 )
 
-//ListBucketsWithDifference used to show different and common elements in 2 []minio.BucketInfo slices
-func ListBucketsWithDifference(mainBuckets, mirrorBuckets []minio.BucketInfo) (result []models.BucketDiffModel) {
+//ListBucketsWithDifference used to show different and common elements in 2 []minio.DiffModel slices
+func ListBucketsWithDifference(mainBuckets, mirrorBuckets []minio.BucketInfo) (result []models.DiffModel) {
 	mainLength := len(mainBuckets)
 	mirrorLength := len(mirrorBuckets)
 	keys := make(map[string]bool)
@@ -25,7 +24,7 @@ func ListBucketsWithDifference(mainBuckets, mirrorBuckets []minio.BucketInfo) (r
 					if _, value := keys[temp.Name]; !value {
 						keys[temp.Name] = true
 
-						diffModel := models.BucketDiffModel{
+						diffModel := models.DiffModel{
 							Name: temp.Name,
 						}
 
@@ -45,7 +44,7 @@ func ListBucketsWithDifference(mainBuckets, mirrorBuckets []minio.BucketInfo) (r
 				if _, value := keys[temp.Name]; !value {
 					keys[temp.Name] = true
 
-					diffModel := models.BucketDiffModel{
+					diffModel := models.DiffModel{
 						Name: temp.Name,
 					}
 
@@ -72,7 +71,7 @@ func ListBucketsWithDifference(mainBuckets, mirrorBuckets []minio.BucketInfo) (r
 }
 
 //ListObjectsWithDifference used to show different and common elements in 2 []minio.ListObjectsInfo slices
-func ListObjectsWithDifference(mainObjects, mirrorObjects []minio.ObjectInfo) (result []models.ObjectDiffModel) {
+func ListObjectsWithDifference(mainObjects, mirrorObjects []minio.ObjectInfo) (result []models.DiffModel) {
 	mainLength := len(mainObjects)
 	mirrorLength := len(mirrorObjects)
 	keys := make(map[string]bool)
@@ -90,7 +89,7 @@ func ListObjectsWithDifference(mainObjects, mirrorObjects []minio.ObjectInfo) (r
 					if _, value := keys[mainFile.Name]; !value {
 						keys[mainFile.Name] = true
 
-						diffModel := models.ObjectDiffModel{
+						diffModel := models.DiffModel{
 							Name: mainFile.Name,
 						}
 
@@ -123,7 +122,7 @@ func ListObjectsWithDifference(mainObjects, mirrorObjects []minio.ObjectInfo) (r
 				if _, value := keys[mainFile.Name]; !value {
 					keys[mainFile.Name] = true
 
-					diffModel := models.ObjectDiffModel{
+					diffModel := models.DiffModel{
 						Name: mainFile.Name,
 					}
 
@@ -170,15 +169,6 @@ func CombineBucketsDistinct(mainBuckets []minio.BucketInfo, mirrorBuckets []mini
 			keys[tempSlice[iterator].Name] = true
 			result = append(result, tempSlice[iterator])
 		}
-	}
-
-	return result
-}
-
-func CombineObjectsDist(objs []interface{}, objs2 []interface{}) (result []interface{}) {
-	switch v:= objs[0].(type) {
-		case minio.ObjectInfo:
-			fmt.Println(v)
 	}
 
 	return result

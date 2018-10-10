@@ -1,14 +1,14 @@
 package utils
 
 import (
-	"strings"
 	"github.com/minio/minio/pkg/auth"
 	"os"
+	"strings"
 
 	"storj.io/ditto/pkg/config"
 	"storj.io/ditto/pkg/gateway"
-	"storj.io/ditto/utils"
 
+	l "storj.io/ditto/pkg/logger"
 	minio "github.com/minio/minio/cmd"
 )
 
@@ -35,7 +35,7 @@ func GetObjectLayer() (minio.ObjectLayer, error) {
 		return nil, err
 	}
 
-	logger := utils.StdOutLogger
+	logger := l.StdOutLogger
 	mirroring := &gateway.Mirroring{Logger: &logger, Config: defaultConfig}
 	objLayer, err := mirroring.NewGatewayLayer(auth.Credentials{})
 

@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 
-	test "storj.io/ditto/utils/testing_utils"
+	test "storj.io/ditto/pkg/utils/testing_utils"
 )
 
 func TestDeleteBucketHandler(t *testing.T) {

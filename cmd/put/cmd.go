@@ -1,11 +1,12 @@
 package put
 
 import (
-	"storj.io/ditto/utils"
-	gw "storj.io/ditto/pkg/gateway"
-	"os/signal"
-	"os"
 	"github.com/spf13/cobra"
+	"os"
+	"os/signal"
+
+	gw "storj.io/ditto/pkg/gateway"
+	l "storj.io/ditto/pkg/logger"
 )
 
 // Cmd represents the put command
@@ -14,7 +15,7 @@ var Cmd = &cobra.Command{
 	Args:    validateArgs,
 	Short:   "Upload files or file list to specified bucket",
 	Long:    `Upload files or file list to specified bucket`,
-	RunE:    NewPutExec(&gw.Mirroring{Logger:&utils.StdOutLogger}, &utils.StdOutLogger).runE,
+	RunE:    NewPutExec(&gw.Mirroring{Logger:&l.StdOutLogger}, &l.StdOutLogger).runE,
 }
 
 var (
