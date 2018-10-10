@@ -7,7 +7,7 @@ import (
 	minio "github.com/minio/minio/cmd"
 	"storj.io/ditto/pkg/filesys"
 	"fmt"
-	)
+)
 
 type AsyncUploader interface {
 	UploadFileAsync(ctx context.PutContext, bucket, lpath string) <-chan error

@@ -2,7 +2,6 @@ package put
 
 import (
 	l "storj.io/ditto/pkg/logger"
-	futils "storj.io/ditto/cmd/utils"
 	"fmt"
 	"path"
 	"os"
@@ -12,7 +11,7 @@ import (
 	minio "github.com/minio/minio/cmd"
 	"storj.io/ditto/pkg/uploader"
 	fsystem "storj.io/ditto/pkg/filesys"
-	dcontext "storj.io/ditto/pkg/context"
+		dcontext "storj.io/ditto/pkg/context"
 )
 
 type putExec struct {
@@ -24,7 +23,7 @@ type putExec struct {
 
 func NewPutExec(gw minio.Gateway, logger l.Logger) putExec {
 	uploader := uploader.NewFolderUploader(nil, fsystem.NewHashFileReader(), fsystem.NewDirReader(), logger)
-	return newPutExec(gw, uploader, fsystem.BDirChecker(futils.CheckIfDir), logger)
+	return newPutExec(gw, uploader, fsystem.NewDirChecker(), logger)
 }
 
 func newPutExec(gw minio.Gateway, uploader uploader.ObjLayerAsyncUploader, dirChecker fsystem.DirChecker, logger l.Logger) putExec {

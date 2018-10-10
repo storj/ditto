@@ -46,15 +46,6 @@ func GetObjectLayer() (minio.ObjectLayer, error) {
 	return objLayer, nil
 }
 
-func CheckIfDir(lpath string) (isDir bool, err error) {
-	fi, err := os.Stat(lpath)
-	if err != nil {
-		return
-	}
-
-	return fi.IsDir(), err
-}
-
 func GetObjectName(fname, prefix, delimiter string) string {
 	if prefix == "" {
 		return fname

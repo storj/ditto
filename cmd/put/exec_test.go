@@ -40,7 +40,7 @@ func TestExec(t *testing.T) {
 				lg := &tutils.MockLogger{}
 
 				uploader := &uploader.MockFolderUploader{}
-				dchecker := fsystem.BDirChecker(func(string) (bool, error) { return true, nil })
+				dchecker := fsystem.MockDirChecker(func(string) (bool, error) { return true, nil })
 
 				exec := newPutExec(gw, uploader, dchecker, lg)
 				err := exec.runE(nil, []string{"bucket", "localpath"})
@@ -59,7 +59,7 @@ func TestExec(t *testing.T) {
 				lg := &tutils.MockLogger{}
 
 				uploader := &uploader.MockFolderUploader{}
-				dchecker := fsystem.BDirChecker(func(string) (bool, error) { return true, nil })
+				dchecker := fsystem.MockDirChecker(func(string) (bool, error) { return true, nil })
 
 				exec := newPutExec(gw, uploader, dchecker, lg)
 				err := exec.runE(nil, []string{"bucket", "localpath"})
@@ -77,7 +77,7 @@ func TestExec(t *testing.T) {
 				lg := &tutils.MockLogger{}
 
 				uploader := &uploader.MockFolderUploader{}
-				dchecker := fsystem.BDirChecker(func(string) (bool, error) { return false, nil })
+				dchecker := fsystem.MockDirChecker(func(string) (bool, error) { return false, nil })
 
 				exec := newPutExec(gw, uploader, dchecker, lg)
 				err := exec.runE(nil, []string{"bucket", "localpath"})
@@ -94,7 +94,7 @@ func TestExec(t *testing.T) {
 				lg := &tutils.MockLogger{}
 
 				uploader := &uploader.MockFolderUploader{}
-				dchecker := fsystem.BDirChecker(func(string) (bool, error) { return true, nil })
+				dchecker := fsystem.MockDirChecker(func(string) (bool, error) { return true, nil })
 
 				exec := newPutExec(gw, uploader, dchecker, lg)
 				err := exec.runE(nil, []string{"bucket", "localpath"})
@@ -111,7 +111,7 @@ func TestExec(t *testing.T) {
 				lg := &tutils.MockLogger{}
 
 				uploader := &uploader.MockFolderUploader{}
-				dchecker := fsystem.BDirChecker(func(string) (bool, error) { return false, fileNotFoundError })
+				dchecker := fsystem.MockDirChecker(func(string) (bool, error) { return false, fileNotFoundError })
 
 				exec := newPutExec(gw, uploader, dchecker, lg)
 				err := exec.runE(nil, []string{"bucket", "localpath"})

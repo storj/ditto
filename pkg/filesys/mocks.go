@@ -74,6 +74,7 @@ func (fo MockFsOpen) Open(lpath string) (File, error) {
 
 type MockFsStat = osStat
 type MockFsReadDir = osReadDir
+type MockDirChecker = osDirChecker
 //------------------------------------------------------------------------------------
 
 type MockFileReader func(string) (FReader, error)
