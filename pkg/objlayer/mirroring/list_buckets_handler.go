@@ -61,21 +61,14 @@ func (h *listBucketsHandler) withoutMerge() ([]minio.BucketInfo, error) {
 
 		h.m.Logger.LogE(h.primeErr)
 
-		if h.m.Config.ListOptions.DefaultOptions.ThrowImmediately {
+		h.execAlter()
 
-			return nil, h.primeErr
+		if h.alterErr != nil {
 
-		} else {
-
-			h.execAlter()
-
-			if h.alterErr != nil {
-
-				return nil, utils.CombineErrors([]error{ h.alterErr, h.primeErr })
-			}
-
-			return h.alterBuckets, nil
+			return nil, utils.CombineErrors([]error{ h.alterErr, h.primeErr })
 		}
+
+		return h.alterBuckets, nil
 	}
 
 	return h.primeBuckets, nil
