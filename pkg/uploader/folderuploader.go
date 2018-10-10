@@ -1,16 +1,18 @@
-package put
+package uploader
 
 import (
-	"fmt"
 	"path"
-
 	l "storj.io/ditto/pkg/logger"
+	"storj.io/ditto/pkg/context"
 	minio "github.com/minio/minio/cmd"
+	"storj.io/ditto/pkg/filesys"
+	"fmt"
+	"storj.io/mirroring/utils"
 )
 
 type AsyncUploader interface {
-	UploadFileAsync(ctx PutContext, bucket, lpath string) <-chan error
-	UploadFolderAsync(ctx PutContext, bucket, lpath string) <-chan error
+	UploadFileAsync(ctx context.PutContext, bucket, lpath string) <-chan error
+	UploadFolderAsync(ctx context.PutContext, bucket, lpath string) <-chan error
 }
 
 type ObjLayerAsyncUploader interface {
@@ -18,14 +20,15 @@ type ObjLayerAsyncUploader interface {
 	SetObjLayer(minio.ObjectLayer)
 }
 
+//----------------------------------------------------------------------------------------------------------------------
 type folderUploader struct {
 	fileUploader
-	DirReader
+	filesys.DirReader
 	l.Logger
 }
 
-func NewFolderUploader(ol minio.ObjectLayer, hr *hFileReader, dr DirReader, lg l.Logger) *folderUploader {
-	return &folderUploader{fileUploader{objectUploader{ol}, hr}, dr, lg}
+func NewFolderUploader(ol minio.ObjectLayer, hr filesys.HashFileReader, dr filesys.DirReader, lg utils.Logger) ObjLayerAsyncUploader {
+	return &folderUploader{fileUploader{ObjectUploader{ol}, hr}, dr, lg}
 }
 
 func (f *folderUploader) SetObjLayer(layer minio.ObjectLayer) {
@@ -36,15 +39,15 @@ func (f *folderUploader) SetObjLayer(layer minio.ObjectLayer) {
 	f.ol = layer
 }
 
-func (f *folderUploader) uploadDir(ctx PutContext, bucket string, dir Dir) {
+func (f *folderUploader) uploadDir(ctx context.PutContext, bucket string, dir filesys.Dir) {
 	files := dir.Files()
 	for i := 0; i < len(files); i++ {
 		item := files[i]
 
 		res := <-f.fileUploader.UploadFileAsync(ctx, bucket, path.Join(dir.Path(), item.Name()))
-		f.LogE(res.err)
-		if res.err == nil {
-			f.Log(fmt.Sprintf("Successfully uploaded %s", res.oi.Name))
+		f.LogE(res.Err)
+		if res.Err == nil {
+			f.Log(fmt.Sprintf("Successfully uploaded %s", res.Oi.Name))
 		}
 	}
 
@@ -62,23 +65,23 @@ func (f *folderUploader) uploadDir(ctx PutContext, bucket string, dir Dir) {
 	}
 }
 
-func (f *folderUploader) UploadFileAsync(ctx PutContext, bucket, lpath string) <-chan error {
+func (f *folderUploader) UploadFileAsync(ctx context.PutContext, bucket, lpath string) <-chan error {
 	derrc := make(chan error, 1)
 	resc := f.fileUploader.UploadFileAsync(ctx, bucket, lpath)
 
 	go func() {
 		res := <-resc
-		if res.err == nil {
-			f.Log(fmt.Sprintf("Successfully uploaded %s", res.oi.Name))
+		if res.Err == nil {
+			f.Log(fmt.Sprintf("Successfully uploaded %s", res.Oi.Name))
 		}
 
-		derrc <- res.err
+		derrc <- res.Err
 	}()
 
 	return derrc
 }
 
-func (f *folderUploader) UploadFolderAsync(ctx PutContext, bucket, lpath string) <-chan error {
+func (f *folderUploader) UploadFolderAsync(ctx context.PutContext, bucket, lpath string) <-chan error {
 	derrc := make(chan error, 1)
 
 	dir, err := f.ReadDir(lpath)
@@ -98,3 +101,5 @@ func (f *folderUploader) UploadFolderAsync(ctx PutContext, bucket, lpath string)
 
 	return derrc
 }
+
+//---------------------------------------------------------------------------------------------------------

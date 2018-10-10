@@ -1,6 +1,8 @@
 package testing_utils
 
-import "errors"
+import (
+	"errors"
+)
 
 var indexOutOfBoundError = errors.New("Index out of bound")
 var unitializedSliceError = errors.New("No calls were made to method")

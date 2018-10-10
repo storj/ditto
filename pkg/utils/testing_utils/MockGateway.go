@@ -7,6 +7,7 @@ import (
 
 type MockGateway struct {
 	Ol minio.ObjectLayer
+	Err error
 }
 
 func (gw *MockGateway) Name() string {
@@ -18,5 +19,9 @@ func (gw *MockGateway) Production() bool {
 }
 
 func (gw *MockGateway) NewGatewayLayer(creds auth.Credentials) (objLayer minio.ObjectLayer, err error) {
+	if gw.Ol == nil {
+		return nil, gw.Err
+	}
+
 	return gw.Ol, nil
 }

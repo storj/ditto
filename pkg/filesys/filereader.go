@@ -1,4 +1,4 @@
-package put
+package filesys
 
 import (
 	"os"
@@ -19,9 +19,9 @@ type HFReader interface {
 	HashReader() *hash.Reader
 }
 
-//-----------------------------------
+//-------------------------------------------
 
-//Implementation-------------------------------
+//Implementation-----------------------------
 type fReader struct {
 	r     io.Reader
 	finfo os.FileInfo
@@ -53,6 +53,7 @@ func (f *hfReader) Read(b []byte) (int, error) {
 	if f.hr == nil {
 		return 0, errors.New("reader is nil")
 	}
+
 	return f.hr.Read(b)
 }
 
@@ -75,14 +76,19 @@ type FileReader interface {
 	ReadFile(string) (FReader, error)
 }
 
-//-------------------------------------------
-
-//Implementation-----------------------------------
-type bFileReader struct {
+type HashFileReader interface {
+	ReadFileH(lpath string) (HFReader, error)
 }
 
-func (f *bFileReader) ReadFile(lpath string) (FReader, error) {
-	file, err := os.Open(lpath)
+//-------------------------------------------
+
+//Implementation-----------------------------
+type baseFileReader struct {
+	FsOpen
+}
+
+func (f *baseFileReader) ReadFile(lpath string) (FReader, error) {
+	file, err := f.Open(lpath)
 	if err != nil {
 		return nil, err
 	}
@@ -96,20 +102,19 @@ func (f *bFileReader) ReadFile(lpath string) (FReader, error) {
 }
 
 //---------------------------------------------------------
-
-type hFileReader struct {
+type hashFileReader struct {
 	fr FileReader
 }
 
-func NewHFileReader() *hFileReader {
-	return &hFileReader{&bFileReader{}}
+func NewHashFileReader() HashFileReader {
+	return &hashFileReader{&baseFileReader{osOpen(os.Open)}}
 }
 
-func (f *hFileReader) ReadFile(lpath string) (FReader, error) {
+func (f *hashFileReader) ReadFile(lpath string) (FReader, error) {
 	return f.ReadFileH(lpath)
 }
 
-func (f *hFileReader) ReadFileH(lpath string) (HFReader, error) {
+func (f *hashFileReader) ReadFileH(lpath string) (HFReader, error) {
 	freader, err := f.fr.ReadFile(lpath)
 	if err != nil {
 		return nil, err

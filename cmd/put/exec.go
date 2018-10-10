@@ -1,35 +1,40 @@
 package put
 
 import (
-	"context"
+	l "storj.io/ditto/pkg/logger"
+	futils "storj.io/ditto/cmd/utils"
 	"fmt"
+	"path"
+	"os"
+	"context"
 	"github.com/minio/minio/pkg/auth"
 	"github.com/spf13/cobra"
-	"os"
-	"path"
-
-	futils "storj.io/ditto/cmd/utils"
-	l "storj.io/ditto/pkg/logger"
 	minio "github.com/minio/minio/cmd"
+	"storj.io/ditto/pkg/uploader"
+	fsystem "storj.io/ditto/pkg/filesys"
+	dcontext "storj.io/ditto/pkg/context"
+
+	"storj.io/mirroring/utils"
 )
 
 type putExec struct {
 	gw minio.Gateway
+	uploader.ObjLayerAsyncUploader
+	fsystem.DirChecker
 	logger l.Logger
-	ObjLayerAsyncUploader
 }
 
-func NewPutExec(gw minio.Gateway, logger l.Logger) putExec {
-	uploader := NewFolderUploader(nil, NewHFileReader(), &dirReader{}, logger)
-	return newPutExec(gw, uploader, logger)
+func NewPutExec(gw minio.Gateway, logger utils.Logger) putExec {
+	uploader := uploader.NewFolderUploader(nil, fsystem.NewHashFileReader(), fsystem.NewDirReader(), logger)
+	return newPutExec(gw, uploader, fsystem.BDirChecker(futils.CheckIfDir), logger)
 }
 
-func newPutExec(gw minio.Gateway, uploader ObjLayerAsyncUploader, logger l.Logger) putExec {
-	return putExec{gw, logger, uploader }
+func newPutExec(gw minio.Gateway, uploader uploader.ObjLayerAsyncUploader, dirChecker fsystem.DirChecker, logger utils.Logger) putExec {
+	return putExec{gw, uploader, dirChecker, logger }
 }
 
 func (e putExec) logF(format string, params ...interface{}) {
-	e.logger.Log(fmt.Sprintf(format, params))
+	e.logger.Log(fmt.Sprintf(format, params...))
 }
 
 //Main function
@@ -47,7 +52,7 @@ func (e putExec) runE(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	isDir, err := futils.CheckIfDir(args[1])
+	isDir, err := e.CheckIfDir(args[1])
 	if err != nil {
 		return err
 	}
@@ -60,7 +65,7 @@ func (e putExec) runE(cmd *cobra.Command, args []string) error {
 	cwd, _ := os.Getwd()
 	lpath := path.Join(cwd, args[1])
 
-	ctxp := NewPutCtx(
+	ctxp := dcontext.NewPutCtx(
 		ctx,
 		frecursive,
 		fforce,
@@ -77,12 +82,12 @@ func (e putExec) runE(cmd *cobra.Command, args []string) error {
 	tnum := 1
 	for i:= 0; i < tnum; i++ {
 		select {
-			case err = <-errc:
-				e.logger.LogE(err)
-			case sig := <-sigc:
-				e.logF("caught interrupt! %s\n", sig)
-				cancelf()
-				tnum++
+		case err = <-errc:
+			e.logger.LogE(err)
+		case sig := <-sigc:
+			e.logF("Catched interrupt! %s\n", sig)
+			cancelf()
+			tnum++
 		}
 	}
 

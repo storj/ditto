@@ -33,6 +33,14 @@ func TestValidateArgs(t *testing.T) {
 				assert.Equal(t, NewInvalidArgsError(1).Error(), err.Error())
 			},
 		},
+		{
+			"Invalid bucket name",
+			func(t *testing.T) {
+				err := validateArgs(nil, []string{"b//.ucket", "object"})
+				assert.Error(t, err)
+				//assert.Equal(t, NewInvalidArgsError(1).Error(), err.Error())
+			},
+		},
 	}
 
 	for _, c := range cases {

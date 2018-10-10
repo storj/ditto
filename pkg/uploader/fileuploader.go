@@ -1,10 +1,12 @@
-package put
+package uploader
 
 import (
 	"storj.io/ditto/cmd/utils"
 	"context"
 	"errors"
 	minio "github.com/minio/minio/cmd"
+	dcontext "storj.io/ditto/pkg/context"
+	"storj.io/ditto/pkg/filesys"
 )
 
 func checkObj(ctx context.Context, ol minio.ObjectLayer, bucket, object string) error {
@@ -18,17 +20,17 @@ func checkObj(ctx context.Context, ol minio.ObjectLayer, bucket, object string) 
 }
 
 type fileUploader struct {
-	objectUploader
-	*hFileReader
+	ObjectUploader
+	filesys.HashFileReader
 }
 
-func (u *fileUploader) UploadFileAsync(ctx PutContext, bucket, lpath string) <-chan uploadResult {
-	dresc := make(chan uploadResult, 1) // delayed result chanel for error handling
-	res := uploadResult{}
+func (u *fileUploader) UploadFileAsync(ctx dcontext.PutContext, bucket, lpath string) <-chan UploadResult {
+	dresc := make(chan UploadResult, 1) // delayed result chanel for error handling
+	res := UploadResult{}
 
 	hfreader, err := u.ReadFileH(lpath)
 	if err != nil {
-		res.err = err
+		res.Err = err
 		dresc <- res
 		return dresc
 	}
@@ -38,7 +40,7 @@ func (u *fileUploader) UploadFileAsync(ctx PutContext, bucket, lpath string) <-c
 	if !ctx.Force() {
 		err = checkObj(ctx, u.ol, bucket, object)
 		if err != nil {
-			res.err = err
+			res.Err = err
 			dresc <- res
 			return dresc
 		}

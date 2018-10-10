@@ -1,50 +1,30 @@
-package put
+package filesys
 
 import (
 	"os"
 	"io/ioutil"
 )
 
-type Dir interface {
-	os.FileInfo
-	Path() string
-	Files() []os.FileInfo
-	Dirs() []os.FileInfo
-}
-
-type dir struct {
-	lpath string
-	os.FileInfo
-	files []os.FileInfo
-	dirs []os.FileInfo
-}
-
-func (d *dir) Path() string {
-	return d.lpath
-}
-
-func (d *dir) Files() []os.FileInfo {
-	return d.files
-}
-
-func (d *dir) Dirs() []os.FileInfo {
-	return d.dirs
-}
-
 type DirReader interface {
 	ReadDir(lpath string) (Dir, error)
 }
 
 type dirReader struct {
+	FsStat
+	FsReadDir
+}
+
+func NewDirReader() DirReader {
+	return &dirReader{osStat(os.Stat), osReadDir(ioutil.ReadDir)}
 }
 
 func (d *dirReader) ReadDir(lpath string) (Dir, error) {
-	info, err := os.Stat(lpath)
+	info, err := d.Stat(lpath)
 	if err != nil {
 		return nil, err
 	}
 
-	items, err := ioutil.ReadDir(lpath)
+	items, err := d.FsReadDir.ReadDir(lpath)
 	if err != nil {
 		return nil, err
 	}

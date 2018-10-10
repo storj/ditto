@@ -42,7 +42,6 @@ func (gw *Mirroring) Name() string {
 // NewGatewayLayer implements minio.Gateway interface
 func (gw *Mirroring) NewGatewayLayer(creds auth.Credentials) (objLayer minio.ObjectLayer, err error) {
 	if gw.Config == nil {
-
 		return nil, errors.New("configuration is not set")
 	}
 
