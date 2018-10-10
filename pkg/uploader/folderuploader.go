@@ -7,8 +7,7 @@ import (
 	minio "github.com/minio/minio/cmd"
 	"storj.io/ditto/pkg/filesys"
 	"fmt"
-	"storj.io/mirroring/utils"
-)
+	)
 
 type AsyncUploader interface {
 	UploadFileAsync(ctx context.PutContext, bucket, lpath string) <-chan error
@@ -27,7 +26,7 @@ type folderUploader struct {
 	l.Logger
 }
 
-func NewFolderUploader(ol minio.ObjectLayer, hr filesys.HashFileReader, dr filesys.DirReader, lg utils.Logger) ObjLayerAsyncUploader {
+func NewFolderUploader(ol minio.ObjectLayer, hr filesys.HashFileReader, dr filesys.DirReader, lg l.Logger) ObjLayerAsyncUploader {
 	return &folderUploader{fileUploader{ObjectUploader{ol}, hr}, dr, lg}
 }
 

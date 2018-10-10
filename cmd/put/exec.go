@@ -13,8 +13,6 @@ import (
 	"storj.io/ditto/pkg/uploader"
 	fsystem "storj.io/ditto/pkg/filesys"
 	dcontext "storj.io/ditto/pkg/context"
-
-	"storj.io/mirroring/utils"
 )
 
 type putExec struct {
@@ -24,12 +22,12 @@ type putExec struct {
 	logger l.Logger
 }
 
-func NewPutExec(gw minio.Gateway, logger utils.Logger) putExec {
+func NewPutExec(gw minio.Gateway, logger l.Logger) putExec {
 	uploader := uploader.NewFolderUploader(nil, fsystem.NewHashFileReader(), fsystem.NewDirReader(), logger)
 	return newPutExec(gw, uploader, fsystem.BDirChecker(futils.CheckIfDir), logger)
 }
 
-func newPutExec(gw minio.Gateway, uploader uploader.ObjLayerAsyncUploader, dirChecker fsystem.DirChecker, logger utils.Logger) putExec {
+func newPutExec(gw minio.Gateway, uploader uploader.ObjLayerAsyncUploader, dirChecker fsystem.DirChecker, logger l.Logger) putExec {
 	return putExec{gw, uploader, dirChecker, logger }
 }
 
