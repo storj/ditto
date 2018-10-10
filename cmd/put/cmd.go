@@ -27,7 +27,8 @@ var (
 )
 
 func init() {
-	sigc = make(chan os.Signal)
+	//TODO: investigate on delayed response
+	sigc = make(chan os.Signal, 1)
 	signal.Notify(sigc, os.Interrupt)
 
 	Cmd.Flags().BoolVarP(&frecursive, "recursive", "r", false, "recursive usage")
