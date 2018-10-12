@@ -20,7 +20,7 @@ func TestListBucketsHandler(t *testing.T) {
 	prime := test.NewProxyObjectLayer()
 	alter := test.NewProxyObjectLayer()
 
-	logger := &test.MockLogger{}
+	logger := &test.MockDiffLogger{}
 
 	m := MirroringObjectLayer{
 		Prime: prime,
@@ -40,7 +40,7 @@ func TestListBucketsHandler(t *testing.T) {
 			testFunc          func()
 			}{
 				{
-					testName: "withMerge: prime error, alter success",
+					testName: "merge: prime error, alter success",
 
 					testFunc: func() {
 
@@ -77,7 +77,7 @@ func TestListBucketsHandler(t *testing.T) {
 					},
 				},
 				{
-					testName: "withMerge: alter error, prime success",
+					testName: "merge: alter error, prime success",
 
 					testFunc: func() {
 
@@ -114,7 +114,7 @@ func TestListBucketsHandler(t *testing.T) {
 					},
 				},
 				{
-					testName: "withMerge: both errors",
+					testName: "merge: both errors",
 
 					testFunc: func() {
 						primeError := errors.New("prime error")
@@ -140,7 +140,7 @@ func TestListBucketsHandler(t *testing.T) {
 					},
 				},
 				{
-					testName: "withMerge: both success",
+					testName: "merge: both success",
 
 					testFunc: func() {
 
@@ -155,6 +155,7 @@ func TestListBucketsHandler(t *testing.T) {
 						}
 
 						combinedBuckets := utils.CombineBucketsDistinct(primeBuckets, alterBuckets)
+						expectedDiff    := utils.ListBucketsWithDifference(primeBuckets, alterBuckets)
 
 						m.Config.ListOptions.Merge = true
 
@@ -169,14 +170,20 @@ func TestListBucketsHandler(t *testing.T) {
 						h := NewListBucketsHandler(&m, ctx)
 
 						buckets, processError := h.Process()
+						loggerDiff := logger.GetDiff()
 
 						assert.Nil(t, processError)
 						assert.NoError(t, processError)
 						assert.NotNil(t, buckets)
 						assert.Equal(t, len(buckets), len(combinedBuckets))
+						assert.Equal(t, len(loggerDiff), len(expectedDiff))
 
 						for i := 0; i < len(buckets); i++ {
 							assert.Equal(t, buckets[i].Name, combinedBuckets[i].Name)
+						}
+						for i := 0; i < len(loggerDiff); i++ {
+							assert.Equal(t, expectedDiff[i].Name, loggerDiff[i].Name)
+							assert.Equal(t, expectedDiff[i].Diff, loggerDiff[i].Diff)
 						}
 
 					},

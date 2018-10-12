@@ -47,16 +47,16 @@ func (h *listBucketsHandler) Process () ([]minio.BucketInfo, error) {
 
 	switch {
 		case h.m.Config.ListOptions.Merge:
-			return h.withMerge()
+			return h.merge()
 
 		case !h.m.Config.ListOptions.DefaultOptions.ThrowImmediately:
-			return h.withoutMerge()
+			return h.retry()
 	}
 
 	return h.primeBuckets, h.primeErr
 }
 
-func (h *listBucketsHandler) withoutMerge() ([]minio.BucketInfo, error) {
+func (h *listBucketsHandler) retry() ([]minio.BucketInfo, error) {
 	if h.primeErr != nil {
 
 		h.m.Logger.LogE(h.primeErr)
@@ -74,7 +74,7 @@ func (h *listBucketsHandler) withoutMerge() ([]minio.BucketInfo, error) {
 	return h.primeBuckets, nil
 }
 
-func (h *listBucketsHandler) withMerge() ([]minio.BucketInfo, error) {
+func (h *listBucketsHandler) merge() ([]minio.BucketInfo, error) {
 	h.execAlter()
 
 	if h.primeErr != nil && h.alterErr == nil {

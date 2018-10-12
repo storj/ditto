@@ -10,19 +10,23 @@ import (
 type DiffLogger interface {
 	Logger
 	LogDiff([]models.DiffModel)
+	GetDiff() []models.DiffModel
 }
 
 type diffLogger struct {
 	lg
-
-	Diff []models.DiffModel
+	diff []models.DiffModel
 }
 
 func (d *diffLogger) LogDiff(diff []models.DiffModel) {
-	d.bucketDiffBuffer = diff
+	d.diff = diff
+}
+
+func (d *diffLogger) GetDiff() ([]models.DiffModel) {
+	return d.diff
 }
 
 var DLogger = diffLogger{
-	Diff: []models.DiffModel{},
-	lg: StdOutLogger,
+	diff: []models.DiffModel{},
+	lg:   StdOutLogger,
 }

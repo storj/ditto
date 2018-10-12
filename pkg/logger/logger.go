@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"storj.io/ditto/pkg/models"
 )
 
 type Logger interface {
@@ -15,7 +14,6 @@ type Logger interface {
 type lg struct {
 	buffer 			 io.Writer
 	errBuffer 		 io.Writer
-	bucketDiffBuffer []models.DiffModel
 
 	format, errFormat string
 }

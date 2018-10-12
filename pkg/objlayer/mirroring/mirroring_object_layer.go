@@ -87,27 +87,15 @@ func (m *MirroringObjectLayer) DeleteBucket(ctx context.Context, bucket string) 
 // 			   If you want to retrieve fewer than the default 1,000 keys, you can add this to your request.
 //             Default value is 1000
 func (m *MirroringObjectLayer) ListObjects(ctx context.Context,
-	bucket string,
-	prefix string,
-	marker string,
-	delimiter string,
-	maxKeys int) (loi minio.ListObjectsInfo, err error) {
+										   bucket string,
+										   prefix string,
+										   marker string,
+										   delimiter string,
+										   maxKeys int) (minio.ListObjectsInfo, error) {
 
-	primeObjects, errPrime := m.Prime.ListObjects(ctx, bucket, prefix, marker, delimiter, maxKeys)
-	alterObjects, errAlter := m.Alter.ListObjects(ctx, bucket, prefix, marker, delimiter, maxKeys)
+	h := NewListObjectsHandler(m, ctx,bucket, prefix, marker, delimiter, maxKeys)
 
-	result := minio.ListObjectsInfo{}
-
-	obj, err := m.processObjList(primeObjects.Objects, alterObjects.Objects, errPrime, errAlter)
-
-	if err != nil {
-		return result, err
-	}
-
-	result = initializeListObjectsInfo(primeObjects, alterObjects, obj, errPrime)
-
-	result.Objects = obj
-	return result, nil
+	return h.Process()
 }
 
 // This implementation of the GET operation returns some or all (up to 1,000) of the objects in a bucket.

@@ -36,12 +36,12 @@ func TestDiffLogger(t *testing.T) {
 
 				DLogger.LogDiff(diff)
 
-				assert.Equal(t, len(diff), len(DLogger.bucketDiffBuffer))
-				assert.NotNil(t, DLogger.bucketDiffBuffer)
+				assert.Equal(t, len(diff), len(DLogger.diff))
+				assert.NotNil(t, DLogger.diff)
 
-				for i := 0; i < len(DLogger.bucketDiffBuffer); i++ {
-					assert.Equal(t, diff[i].Name, DLogger.bucketDiffBuffer[i].Name)
-					assert.Equal(t, diff[i].Diff, DLogger.bucketDiffBuffer[i].Diff)
+				for i := 0; i < len(DLogger.diff); i++ {
+					assert.Equal(t, diff[i].Name, DLogger.diff[i].Name)
+					assert.Equal(t, diff[i].Diff, DLogger.diff[i].Diff)
 				}
 
 			},
