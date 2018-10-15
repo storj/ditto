@@ -2,13 +2,11 @@ package mirroring
 
 import (
 	"context"
+	minio "github.com/minio/minio/cmd"
 	"github.com/minio/minio/pkg/hash"
 	"io"
 	"storj.io/ditto/pkg/config"
-	"storj.io/ditto/pkg/utils"
-
 	l "storj.io/ditto/pkg/logger"
-	minio "github.com/minio/minio/cmd"
 )
 
 //MirroringObjectLayer is
@@ -123,22 +121,9 @@ func (m *MirroringObjectLayer) ListObjectsV2(ctx        context.Context,
 											 fetchOwner bool,
 											 startAfter string) (minio.ListObjectsV2Info, error) {
 
-	primeObjects, errPrime := m.Prime.ListObjectsV2(ctx, bucket, prefix, cntnTkn, delim, maxKeys, fetchOwner, startAfter)
-	alterObjects, errAlter := m.Alter.ListObjectsV2(ctx, bucket, prefix, cntnTkn, delim, maxKeys, fetchOwner, startAfter)
+	h := NewListObjectsV2Handler(m, ctx, bucket, prefix, cntnTkn, delim, startAfter, maxKeys, fetchOwner)
 
-	result := minio.ListObjectsV2Info{}
-
-	obj, err := m.processObjList(primeObjects.Objects, alterObjects.Objects, errPrime, errAlter)
-
-	if err != nil {
-		return result, err
-	}
-
-	result = initializeListObjectsV2Info(primeObjects, alterObjects, obj, errPrime)
-
-	result.Objects = obj
-
-	return result, nil
+	return h.Process()
 }
 
 // Retrieves an object
@@ -222,123 +207,4 @@ func (m *MirroringObjectLayer) DeleteObject(ctx context.Context, bucket, object 
 	h := NewDeleteObjectHandler(m, ctx, bucket, object)
 
 	return h.Process()
-}
-
-//PRIVATE METHODS-------------------------------------------------------------------------------------------------------------------------
-
-// This method combines both errors, creates new error,
-// depends on error messages of previous error and place it in Logger.
-// Returns nil if at least 1 error is nil.
-func (m *MirroringObjectLayer) error(errPrime, errAlter error) error {
-	// m.Logger.Err = utils.CombineErrors([]error{errPrime, errAlter})
-
-	if errPrime != nil && errAlter != nil {
-		return utils.CombineErrors([]error{errPrime, errAlter})
-	}
-
-	return nil
-}
-
-// This method combines both errors, creates new error,
-// depends on error messages of previous error and place it in Logger.
-// Returns nil as error if at least 1 error is nil.
-// Also checks both minio.ObjectInfo args and returns first non nil.
-func (m *MirroringObjectLayer) errorWithResult(objInfoPrime minio.ObjectInfo,
-	objInfoAlter minio.ObjectInfo,
-	errPrime error,
-	errAlter error) (objInfo minio.ObjectInfo, err error) {
-
-	// m.Logger.Err = utils.CombineErrors([]error{errPrime, errAlter})
-
-	if errPrime != nil && errAlter != nil {
-		err = utils.CombineErrors([]error{errPrime, errAlter})
-		return
-	}
-
-	if errPrime != nil {
-		objInfo = objInfoAlter
-	} else {
-		objInfo = objInfoPrime
-	}
-
-	return
-}
-
-// This method combines both errors, creates new error,
-// depends on error messages of previous error and place it in Logger.
-// Returns nil as error if at least 1 error is nil.
-// Also checks both []minio.ObjectInfo and returns distinct union of both.
-func (m *MirroringObjectLayer) processObjList(primeObjects []minio.ObjectInfo,
-	alterObjects []minio.ObjectInfo,
-	errPrime error,
-	errAlter error) ([]minio.ObjectInfo, error) {
-
-	// m.Logger.Err = utils.CombineErrors([]error{errPrime, errAlter})
-
-	if errPrime != nil && errAlter != nil {
-		return nil, utils.CombineErrors([]error{errPrime, errAlter})
-	}
-
-	//TODO: place this in the logger somehow
-	utils.ListObjectsWithDifference(primeObjects, alterObjects)
-
-	return utils.CombineObjectsDistinct(primeObjects, alterObjects), nil
-}
-
-// This method combines both errors, creates new error,
-// depends on error messages of previous error and place it in Logger.
-// Returns nil as error if at least 1 error is nil.
-// Also checks both []minio.BucketInfo and returns distinct union of both.
-func (m *MirroringObjectLayer) processBucketList(primeBuckets []minio.BucketInfo,
-	alterBuckets []minio.BucketInfo,
-	errPrime error,
-	errAlter error) ([]minio.BucketInfo, error) {
-
-	// m.Logger.Err = utils.CombineErrors([]error{errPrime, errAlter})
-
-	if errPrime != nil && errAlter != nil {
-		return nil, utils.CombineErrors([]error{errPrime, errAlter})
-	}
-
-	//TODO: place this in the logger somehow
-	utils.ListBucketsWithDifference(primeBuckets, alterBuckets)
-
-	return utils.CombineBucketsDistinct(primeBuckets, alterBuckets), nil
-}
-
-func initializeListObjectsV2Info(prime minio.ListObjectsV2Info,
-	alter minio.ListObjectsV2Info,
-	objects []minio.ObjectInfo,
-	errPrime error) (result minio.ListObjectsV2Info) {
-
-	result = minio.ListObjectsV2Info{}
-
-	if errPrime != nil {
-		result = prime
-	} else {
-		result = alter
-	}
-
-	result.Objects = objects
-
-	return
-}
-
-func initializeListObjectsInfo(prime minio.ListObjectsInfo,
-							   alter minio.ListObjectsInfo,
-							   objects []minio.ObjectInfo,
-
-							   errPrime error) (result minio.ListObjectsInfo) {
-
-	result = minio.ListObjectsInfo{}
-
-	if errPrime != nil {
-		result = prime
-	} else {
-		result = alter
-	}
-
-	result.Objects = objects
-
-	return
 }
