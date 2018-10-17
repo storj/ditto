@@ -7,6 +7,7 @@ import:
   subpackages:
   - pkg/s3utils
 - package: github.com/minio/minio
+  version: RELEASE.2018-09-12T18-49-56Z
   subpackages:
   - cmd
   - pkg/auth
