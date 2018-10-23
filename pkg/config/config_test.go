@@ -323,7 +323,6 @@ func TestGetMergedPrimeCredentials(t *testing.T) {
 	}
 }
 
-
 func TestGetMergedAlterCredentials(t *testing.T) {
 	tests := []struct {
 		name        string
@@ -368,6 +367,54 @@ func TestGetMergedAlterCredentials(t *testing.T) {
 			assert.Equal(t, credentials.Endpoint, test.expected.Endpoint)
 			assert.Equal(t, credentials.AccessKey, test.expected.AccessKey)
 			assert.Equal(t, credentials.SecretKey, test.expected.SecretKey)
+		})
+	}
+}
+
+func Test(t *testing.T) {
+	tests := []struct {
+		name           string
+		endpoint       string
+		accessKey      string
+		secretKey      string
+		expectedResult bool
+	}{
+		{
+			name:           "Empty endpoint",
+			endpoint:       "",
+			accessKey:      "a",
+			secretKey:      "a",
+			expectedResult: true,
+		},
+		{
+			name:           "Empty AccessKey",
+			endpoint:       "a",
+			accessKey:      "",
+			secretKey:      "a",
+			expectedResult: true,
+		},
+		{
+			name:           "Empty SecretKey",
+			endpoint:       "a",
+			accessKey:      "a",
+			secretKey:      "",
+			expectedResult: true,
+		},
+		{
+			name:           "Valid case",
+			endpoint:       "a",
+			accessKey:      "a",
+			secretKey:      "a",
+			expectedResult: false,
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			cred := NewCredentials(test.endpoint, test.accessKey, test.secretKey)
+
+			isEmpty := cred.IsEmpty()
+
+			assert.Equal(t, isEmpty, test.expectedResult)
 		})
 	}
 }

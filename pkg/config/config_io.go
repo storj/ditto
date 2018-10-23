@@ -1,18 +1,18 @@
 package config
 
 import (
-	"encoding/json"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
+	"os"
+	"os/user"
 )
 
 // Reads config from default config location($HOME/.ditto/config.json or from user-defined location
 // Returns parsed config or error
-func ReadDefaultConfig(useDefaults bool) (config *Config, err error) {
+func ReadConfig(useDefaults bool) (config *Config, err error) {
 	config, err = parseConfig(useDefaults)
 
 	if err != nil {
-		println(err.Error())
 		return nil, err
 	}
 
@@ -22,8 +22,8 @@ func ReadDefaultConfig(useDefaults bool) (config *Config, err error) {
 		return nil, errors.New("Credentials are not set. Please define credentials with `ditto config set`")
 	}
 
-	bytes, _ := json.MarshalIndent(config, "", "\t")
-	println(string(bytes))
+	// bytes, _ := json.MarshalIndent(config, "", "\t")
+	// println(string(bytes))
 
 	return config, nil
 }
@@ -31,18 +31,27 @@ func ReadDefaultConfig(useDefaults bool) (config *Config, err error) {
 // Gather config values and applies default values
 func parseConfig(useDefaults bool) (config *Config, err error) {
 	if viper.IsSet("configPath") {
-		viper.SetConfigFile(viper.GetString("configPath"))
+		configPath := viper.GetString("configPath")
+
+		viper.SetConfigFile(configPath)
+		// Create empty file if not exist
+		os.OpenFile(configPath, os.O_RDONLY|os.O_CREATE, 0666)
 	} else {
 		viper.SetConfigName("config")
-		viper.AddConfigPath("$HOME/.ditto")
+		viper.AddConfigPath("$HOME/.ditto/")
 		viper.SetConfigType("json")
+
+		// Create empty file if not exist
+		user, err := user.Current()
+		if err == nil {
+			os.OpenFile(user.HomeDir+"/.ditto/config.json", os.O_RDONLY|os.O_CREATE, 0666)
+		}
 	}
 
 	if useDefaults {
 		setDefaults()
 	}
 
-	// viper.AutomaticEnv()
 	err = viper.ReadInConfig()
 	if err != nil {
 		return nil, err

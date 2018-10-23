@@ -8,39 +8,45 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"storj.io/ditto/cmd/config/config_utils"
 	"storj.io/ditto/pkg/config"
 )
 
 var getSubCmd = &cobra.Command{
-	Use:   "get",
-	Short: "Mirroring options setup",
-	Long:  `getSub`,
-
-	Run: func(cmd *cobra.Command, args []string) {
-		arg := args[0]
-
-		config.ReadDefaultConfig(false)
-		if config_utils.ContainsKey(arg) {
-			getValueFromConfigFile(arg)
-		} else {
-			fmt.Println("\tKey unsupported")
-		}
-	},
-
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) != 1 {
-			return errors.New("Only one argument accepted")
-		}
-		return nil
-	},
+	Use:   "get [key]",
+	Short: "Displays value set for requested key",
+	Long:  "Displays value set for requested key",
+	RunE:  executeGetCmd,
+	Args:  validateGetArgs,
 }
 
-func getValueFromConfigFile(key string) {
-	if viper.IsSet(key) {
-		fmt.Printf("\t%s\n", viper.GetString(key))
+// Method reference for unit testing
+var readConfigMethod = config.ReadConfig
+
+func executeGetCmd(cmd *cobra.Command, args []string) error {
+	arg := args[0]
+
+	readConfigMethod(false)
+	if containsKey(arg) {
+		fmt.Sprintf("\t%s\n", getValueFromConfigFile(arg))
+		return nil
 	} else {
-		fmt.Println("\tUNDEFINED")
+		return errors.New("Key unsupported")
+	}
+}
+
+func validateGetArgs(cmd *cobra.Command, args [] string) error {
+	if len(args) != 1 {
+		return errors.New("Only one argument accepted")
+	}
+	return nil
+
+}
+
+func getValueFromConfigFile(key string) string {
+	if viper.IsSet(key) {
+		return viper.GetString(key)
+	} else {
+		return "Key is not set"
 	}
 }
 
