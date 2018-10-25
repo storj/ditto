@@ -30,7 +30,7 @@ func FileOrDirExists(path string) (bool, error) {
 
 //TODO: implement
 func GetObjectLayer() (minio.ObjectLayer, error) {
-	defaultConfig, err := config.ReadDefaultConfig(true)
+	defaultConfig, err := config.ReadConfig(true)
 	if err != nil {
 		return nil, err
 	}
