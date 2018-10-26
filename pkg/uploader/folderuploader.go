@@ -75,7 +75,7 @@ func (f *folderUploader) UploadFileAsync(ctx context.PutContext, bucket, lpath s
 	go func() {
 		res := <-resc
 		if res.Err == nil {
-			f.Log(fmt.Sprintf("Successfully uploaded %s", res.Oi.Name))
+			//f.Log(fmt.Sprintf("Successfully uploaded %s", res.Oi.Name))
 		}
 
 		derrc <- res.Err
