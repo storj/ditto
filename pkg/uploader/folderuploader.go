@@ -104,7 +104,7 @@ func (f *folderUploader) UploadFolderAsync(ctx context.PutContext, bucket, lpath
 
 	if !ctx.Recursive() {
 		if dirsLen > 0 {
-			f.Log(fmt.Sprintf("Found %d folders, add -r flag to recursively download them"))
+			f.Log(fmt.Sprintf("Found %d folders, add -r flag to recursively download them", dirsLen))
 		}
 	}
 
