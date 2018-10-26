@@ -86,7 +86,7 @@ func (e putExec) runE(cmd *cobra.Command, args []string) error {
 	for i:= 0; i < tnum; i++ {
 		select {
 		case err = <-errc:
-			e.logger.LogE(err)
+			//e.logger.LogE(err)
 		case sig := <-sigc:
 			e.logF("Catched interrupt! %s\n", sig)
 			cancelf()
