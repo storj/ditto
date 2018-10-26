@@ -1,6 +1,7 @@
 package uploader
 
 import (
+	"fmt"
 	"storj.io/ditto/cmd/utils"
 	"context"
 	"errors"
@@ -13,7 +14,7 @@ func checkObj(ctx context.Context, ol minio.ObjectLayer, bucket, object string) 
 	//TODO: check opts
 	_, err := ol.GetObjectInfo(ctx, bucket, object, minio.ObjectOptions{})
 	if err == nil {
-		return errors.New("object allready exists") //Make or find approp error
+		return errors.New(fmt.Sprintf("Object allready exists %s", object))
 	}
 
 	return nil

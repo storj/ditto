@@ -2,6 +2,7 @@ package uploader
 
 import (
 	"path"
+	"storj.io/ditto/cmd/utils"
 	l "storj.io/ditto/pkg/logger"
 	"storj.io/ditto/pkg/context"
 	minio "github.com/minio/minio/cmd"
@@ -58,8 +59,11 @@ func (f *folderUploader) uploadDir(ctx context.PutContext, bucket string, dir fi
 	for i := 0; i < len(dirs); i++ {
 		item := dirs[i]
 
-		ctxf := ctx.WithPrefix(path.Join(ctx.Prefix(), item.Name()))
-		f.Log(fmt.Sprintf("Recursively uploading folder %s", ctxf.Prefix()))
+		ctxf := ctx.WithPrefixPath(
+			utils.GetObjectName(item.Name(), ctx.Prefix(), ctx.Delimiter()),
+			path.Join(ctx.Path(), item.Name()))
+
+		f.Log(fmt.Sprintf("Recursively uploading folder %s", ctxf.Path()))
 		_ = <-f.UploadFolderAsync(ctxf, bucket, path.Join(dir.Path(), item.Name()))
 	}
 }

@@ -66,14 +66,14 @@ func (h *putHandler) process(ctx context.Context, bucket, object string, data *h
 	for i := 0; i < tnum; i++ {
 		select {
 		case err = <-errMain:
-			h.logger.LogE(err)
+			//h.logger.LogE(err)
 			objInfo = moi
 			if err != nil {
 				pr.Close()
 				mrcancelf() //Not sure if we need to call it cause it autocanceled once pipe writer s closed
 			}
-		case errm := <-errMirr:
-			h.logger.LogE(errm)
+		case _ = <-errMirr:
+			//h.logger.LogE(errm) //Print error from mirror
 		case <-done:
 			mcancelf()
 			pr.Close()

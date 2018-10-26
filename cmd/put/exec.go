@@ -1,33 +1,33 @@
 package put
 
 import (
-	l "storj.io/ditto/pkg/logger"
-	"fmt"
-	"path"
-	"os"
 	"context"
+	"fmt"
 	"github.com/minio/minio/pkg/auth"
 	"github.com/spf13/cobra"
-	minio "github.com/minio/minio/cmd"
-	"storj.io/ditto/pkg/uploader"
+	"os"
+	"path"
+	"storj.io/ditto/cmd/utils"
+	dcontext "storj.io/ditto/pkg/context"
 	fsystem "storj.io/ditto/pkg/filesys"
-		dcontext "storj.io/ditto/pkg/context"
+	l "storj.io/ditto/pkg/logger"
+	"storj.io/ditto/pkg/uploader"
 )
 
 type putExec struct {
-	gw minio.Gateway
+	resolver utils.GetwayResolver
 	uploader.ObjLayerAsyncUploader
 	fsystem.DirChecker
 	logger l.Logger
 }
 
-func NewPutExec(gw minio.Gateway, logger l.Logger) putExec {
+func NewPutExec(resolver utils.GetwayResolver, logger l.Logger) putExec {
 	uploader := uploader.NewFolderUploader(nil, fsystem.NewHashFileReader(), fsystem.NewDirReader(), logger)
-	return newPutExec(gw, uploader, fsystem.NewDirChecker(), logger)
+	return newPutExec(resolver, uploader, fsystem.NewDirChecker(), logger)
 }
 
-func newPutExec(gw minio.Gateway, uploader uploader.ObjLayerAsyncUploader, dirChecker fsystem.DirChecker, logger l.Logger) putExec {
-	return putExec{gw, uploader, dirChecker, logger }
+func newPutExec(resolver utils.GetwayResolver, uploader uploader.ObjLayerAsyncUploader, dirChecker fsystem.DirChecker, logger l.Logger) putExec {
+	return putExec{resolver, uploader, dirChecker, logger }
 }
 
 func (e putExec) logF(format string, params ...interface{}) {
@@ -36,7 +36,12 @@ func (e putExec) logF(format string, params ...interface{}) {
 
 //Main function
 func (e putExec) runE(cmd *cobra.Command, args []string) error {
-	mirr, err := e.gw.NewGatewayLayer(auth.Credentials{})
+	gw, err := e.resolver(e.logger)
+	if err != nil {
+		return err
+	}
+
+	mirr, err := gw.NewGatewayLayer(auth.Credentials{})
 	if err != nil {
 		return err
 	}
@@ -67,7 +72,8 @@ func (e putExec) runE(cmd *cobra.Command, args []string) error {
 		frecursive,
 		fforce,
 		fprefix,
-		fdelimiter)
+		fdelimiter,
+		args[1])
 
 	var errc <-chan error
 	if isDir {

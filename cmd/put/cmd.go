@@ -4,8 +4,8 @@ import (
 	"github.com/spf13/cobra"
 	"os"
 	"os/signal"
+	"storj.io/ditto/cmd/utils"
 
-	gw "storj.io/ditto/pkg/gateway"
 	l "storj.io/ditto/pkg/logger"
 )
 
@@ -16,7 +16,7 @@ var Cmd = &cobra.Command{
 	Args:    validateArgs,
 	Short:   "Upload files or file list_cmd to specified bucket",
 	Long:    `Upload files or file list_cmd to specified bucket`,
-	RunE:    NewPutExec(&gw.Mirroring{Logger:&l.StdOutLogger}, &l.StdOutLogger).runE,
+	RunE:    NewPutExec(utils.GetGateway, &l.StdOutLogger).runE,
 }
 
 var (

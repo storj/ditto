@@ -46,6 +46,17 @@ func GetObjectLayer() (minio.ObjectLayer, error) {
 	return objLayer, nil
 }
 
+type GetwayResolver func(l.Logger) (minio.Gateway, error)
+
+func GetGateway(logger l.Logger) (minio.Gateway, error) {
+	defaultConfig, err := config.ReadConfig(true)
+	if err != nil {
+		return nil, err
+	}
+
+	return &gateway.Mirroring{Logger: logger, Config: defaultConfig}, nil
+}
+
 func GetObjectName(fname, prefix, delimiter string) string {
 	if prefix == "" {
 		return fname

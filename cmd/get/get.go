@@ -24,12 +24,6 @@ var Cmd = &cobra.Command{
 }
 
 func runE(cmd *cobra.Command, args []string) error {
-	fmt.Println("get called")
-
-	//for i := range args {
-	//	fmt.Printf("Arg%d: %s\n", i, args[i])
-	//}
-
 	fmt.Printf("Filename: %s\n", nameFlag)
 	fmt.Printf("Cwd: %s\n", global.Params.GetCwd())
 
@@ -38,7 +32,7 @@ func runE(cmd *cobra.Command, args []string) error {
 		return errors.New("unable to get current working directory")
 	}
 
-	var mirrGateway gw.Mirroring = gw.Mirroring{Logger: &l.StdOutLogger}
+	mirrGateway := gw.Mirroring{Logger: &l.StdOutLogger}
 
 	var mirr, err =  mirrGateway.NewGatewayLayer(auth.Credentials{})
 	if err != nil {
