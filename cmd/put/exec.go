@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"github.com/minio/minio/pkg/auth"
 	"github.com/spf13/cobra"
-	"os"
-	"path"
+	"path/filepath"
 	"storj.io/ditto/cmd/utils"
 	dcontext "storj.io/ditto/pkg/context"
 	fsystem "storj.io/ditto/pkg/filesys"
@@ -64,8 +63,7 @@ func (e putExec) runE(cmd *cobra.Command, args []string) error {
 		cancelf()
 	}()
 	
-	cwd, _ := os.Getwd()
-	lpath := path.Join(cwd, args[1])
+	lpath := filepath.Clean(args[1])
 
 	ctxp := dcontext.NewPutCtx(
 		ctx,
@@ -73,7 +71,7 @@ func (e putExec) runE(cmd *cobra.Command, args []string) error {
 		fforce,
 		fprefix,
 		fdelimiter,
-		args[1])
+		lpath)
 
 	var errc <-chan error
 	if isDir {
