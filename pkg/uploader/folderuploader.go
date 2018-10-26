@@ -65,6 +65,7 @@ func (f *folderUploader) uploadDir(ctx context.PutContext, bucket string, dir fi
 
 		f.Log(fmt.Sprintf("Recursively uploading folder %s", ctxf.Path()))
 		_ = <-f.UploadFolderAsync(ctxf, bucket, path.Join(dir.Path(), item.Name()))
+
 	}
 }
 
@@ -91,6 +92,20 @@ func (f *folderUploader) UploadFolderAsync(ctx context.PutContext, bucket, lpath
 	if err != nil {
 		derrc <- err
 		return derrc
+	}
+
+	dirsLen := len(dir.Dirs())
+	filesLen := len(dir.Files())
+	if dirsLen == 0 && filesLen == 0 {
+		f.Log(fmt.Sprintf("Folder %s is empty, no files to upload", lpath))
+		derrc <- nil
+		return derrc
+	}
+
+	if !ctx.Recursive() {
+		if dirsLen > 0 {
+			f.Log(fmt.Sprintf("Found %d folders, add -r flag to recursively download them"))
+		}
 	}
 
 	//upload
