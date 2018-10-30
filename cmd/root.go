@@ -6,9 +6,10 @@ package cmd
 import (
 	"storj.io/ditto/cmd/config"
 	"storj.io/ditto/cmd/cp"
+	"storj.io/ditto/cmd/delete"
 	"storj.io/ditto/cmd/get"
 	"storj.io/ditto/cmd/list"
-	"storj.io/ditto/cmd/make_bucket"
+	"storj.io/ditto/cmd/mb"
 	"storj.io/ditto/cmd/put"
 	"storj.io/ditto/cmd/server"
 	"storj.io/ditto/cmd/version"
@@ -38,12 +39,12 @@ func Execute() {
 }
 
 func addCommands() {
-	rootCmd.AddCommand(make_bucket.Cmd)
+	rootCmd.AddCommand(mb.Cmd)
 	rootCmd.AddCommand(cp.Cmd)
 	rootCmd.AddCommand(put.Cmd)
 	rootCmd.AddCommand(get.Cmd)
 	rootCmd.AddCommand(list.Cmd)
-	// rootCmd.AddCommand(delete.Cmd)
+	rootCmd.AddCommand(delete.Cmd)
 	rootCmd.AddCommand(version.Cmd)
 	rootCmd.AddCommand(config.Cmd)
 	rootCmd.AddCommand(server.Cmd)
