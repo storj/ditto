@@ -2,41 +2,61 @@ package get
 
 import (
 	"context"
+	minio "github.com/minio/minio/cmd"
 	"github.com/minio/minio/pkg/auth"
 	"github.com/spf13/cobra"
-	"os"
-
-	l "storj.io/ditto/pkg/logger"
-	minio "github.com/minio/minio/cmd"
+	"path/filepath"
+	"storj.io/ditto/cmd/utils"
+	dcontext "storj.io/ditto/pkg/context"
+	"storj.io/ditto/pkg/downloader"
+	"storj.io/ditto/pkg/filesys"
+	"storj.io/ditto/pkg/logger"
 )
 
-func newGetExec(gw minio.Gateway, lg l.Logger) *getExec {
-	return &getExec{gw, lg}
+func NewGetExec(resolver utils.GetwayResolver, lg logger.Logger) *getExec {
+	return &getExec{resolver, lg}
 }
 
 type getExec struct {
-	minio.Gateway
-	l.Logger
+	utils.GetwayResolver
+	logger.Logger
 }
 
 func (e *getExec) runE(cmd *cobra.Command, args []string) (err error) {
-	mirr, err := e.NewGatewayLayer(auth.Credentials{})
+	gw, err := e.GetwayResolver(e.Logger)
+	if err != nil {
+		return
+	}
+
+	mirr, err := gw.NewGatewayLayer(auth.Credentials{})
 	if err != nil {
 		return
 	}
 
 	ctx := context.Background()
-
-	file, err := os.Create(args[1])
-	if err != nil {
-		return
+	getCtx := &dcontext.GetContext{
+		ctx,
+		filepath.Clean(nameFlag),
+		prefixFlag,
+		delimiterFlag,
+		recursiveFlag,
+		forceFlag,
+		maxKeysFlag,
 	}
 
-	_, err = file.Stat()
-	if err != nil {
-		return
+	var miniod downloader.MinioDownloader
+	if forceFlag {
+		miniod = downloader.ForceFileDownloader(downloader.NewObjectDownloader(mirr, minio.ObjectOptions{}))
+	} else {
+		miniod = downloader.NFileDownloader(downloader.NewObjectDownloader(mirr, minio.ObjectOptions{}))
 	}
 
-	err = mirr.GetObject(ctx, args[0], args[1], 0, int64(3000000), file, "", minio.ObjectOptions{})
-	return err
+	argsLen := len(args)
+	if argsLen == 2 {
+		objname := utils.AppendObject(getCtx.Prefix, args[1], getCtx.Delimiter)
+		return downloader.GetObject(getCtx, args[0], objname, miniod, e.Logger, filesys.DirMaker())
+	}
+
+
+	return downloader.GetPrefix(getCtx, args[0], prefixFlag, miniod, e.Logger, filesys.DirMaker())
 }

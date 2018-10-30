@@ -57,7 +57,7 @@ func GetGateway(logger l.Logger) (minio.Gateway, error) {
 	return &gateway.Mirroring{Logger: logger, Config: defaultConfig}, nil
 }
 
-func GetObjectName(fname, prefix, delimiter string) string {
+func GetObjectName(fname, prefix, delimiter string) (string) {
 	if prefix == "" {
 		return fname
 	}
@@ -67,4 +67,32 @@ func GetObjectName(fname, prefix, delimiter string) string {
 	}
 
 	return strings.Join([]string{prefix, fname}, delimiter)
+}
+
+func GetFileName(object, delimiter string) (string) {
+	elems := strings.Split(object, delimiter)
+
+	elemlen := len(elems)
+	for i := elemlen; i > 0; i-- {
+		value := elems[i-1]
+		if value != "" {
+			return value
+		}
+	}
+
+	return object
+}
+
+func AppendPrefix(base, prefix, delimiter string) (string) {
+	prefix = strings.Trim(prefix, delimiter)
+
+	if base == "" {
+		return strings.Join([]string{prefix, ""}, delimiter)
+	}
+
+	return strings.Join([]string{base, prefix, ""}, delimiter)
+}
+
+func AppendObject(prefix, object, delimiter string) (string) {
+	return strings.TrimSuffix(AppendPrefix(prefix, strings.TrimPrefix(object, prefix), delimiter), delimiter)
 }

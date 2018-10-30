@@ -52,7 +52,15 @@ func (f *MockFile) ReadAt([]byte, int64) (int, error) {
 	return 0, f.Err
 }
 
-func (f *MockFile) Seek(offset int64, whence int) (int64, error) {
+func (f *MockFile) Seek(int64, int) (int64, error) {
+	return 0, f.Err
+}
+
+func (f *MockFile) Write([]byte) (int, error) {
+	return 0, f.Err
+}
+
+func (f *MockFile) WriteAt([]byte, int64) (int, error) {
 	return 0, f.Err
 }
 

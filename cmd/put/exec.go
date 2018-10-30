@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/minio/minio/pkg/auth"
 	"github.com/spf13/cobra"
+	"os"
+	"os/signal"
 	"path/filepath"
 	"storj.io/ditto/cmd/utils"
 	dcontext "storj.io/ditto/pkg/context"
@@ -16,16 +18,16 @@ import (
 type putExec struct {
 	resolver utils.GetwayResolver
 	uploader.ObjLayerAsyncUploader
-	fsystem.DirChecker
+	fsystem.FsCheckDir
 	logger l.Logger
 }
 
 func NewPutExec(resolver utils.GetwayResolver, logger l.Logger) putExec {
 	uploader := uploader.NewFolderUploader(nil, fsystem.NewHashFileReader(), fsystem.NewDirReader(), logger)
-	return newPutExec(resolver, uploader, fsystem.NewDirChecker(), logger)
+	return newPutExec(resolver, uploader, fsystem.DirChecker(), logger)
 }
 
-func newPutExec(resolver utils.GetwayResolver, uploader uploader.ObjLayerAsyncUploader, dirChecker fsystem.DirChecker, logger l.Logger) putExec {
+func newPutExec(resolver utils.GetwayResolver, uploader uploader.ObjLayerAsyncUploader, dirChecker fsystem.FsCheckDir, logger l.Logger) putExec {
 	return putExec{resolver, uploader, dirChecker, logger }
 }
 
@@ -35,6 +37,9 @@ func (e putExec) logF(format string, params ...interface{}) {
 
 //Main function
 func (e putExec) runE(cmd *cobra.Command, args []string) error {
+	sigc = make(chan os.Signal, 1)
+	signal.Notify(sigc, os.Interrupt)
+
 	gw, err := e.resolver(e.logger)
 	if err != nil {
 		return err

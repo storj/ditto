@@ -13,6 +13,22 @@ type FsStat interface {
 	Stat(lpath string) (os.FileInfo, error)
 }
 
+type FsCreate interface {
+	Create(lpath string) (File, error)
+}
+
+type FsRemove interface {
+	Remove(lpath string) (error)
+}
+
+type FsMkdir interface {
+	Mkdir(lpath string) (error)
+}
+
+type FsCheckDir interface {
+	CheckIfDir(string) (bool, error)
+}
+
 type FsReadDir interface {
 	ReadDir(lpath string) ([]os.FileInfo, error)
 }
@@ -20,6 +36,9 @@ type FsReadDir interface {
 type FileSystem interface {
 	FsOpen
 	FsStat
+	FsCreate
+	FsRemove
+	FsReadDir
 }
 
 type File interface {
@@ -27,6 +46,8 @@ type File interface {
 	io.Reader
 	io.ReaderAt
 	io.Seeker
+	io.Writer
+	io.WriterAt
 	Stat() (os.FileInfo, error)
 }
 
@@ -37,44 +58,4 @@ type Dir interface {
 	Dirs() []os.FileInfo
 }
 
-//------------------------------------------------
-type osOpen func(string) (*os.File, error)
 
-func (f osOpen) Open(lpath string) (File, error) {
-	return f(lpath)
-}
-//------------------------------------------------
-
-type osStat func(string) (os.FileInfo, error)
-
-func(s osStat) Stat(lpath string) (os.FileInfo, error) {
-	return s(lpath)
-}
-//------------------------------------------------
-
-type osReadDir func(string) ([]os.FileInfo, error)
-
-func (r osReadDir) ReadDir(lpath string) ([]os.FileInfo, error) {
-	return r(lpath)
-}
-//------------------------------------------------
-
-type dir struct {
-	lpath string
-	os.FileInfo
-	files []os.FileInfo
-	dirs []os.FileInfo
-}
-
-func (d *dir) Path() string {
-	return d.lpath
-}
-
-func (d *dir) Files() []os.FileInfo {
-	return d.files
-}
-
-func (d *dir) Dirs() []os.FileInfo {
-	return d.dirs
-}
-//------------------------------------------------

@@ -63,10 +63,10 @@ func TestPutHandler(t *testing.T) {
 
 				_, err = m.PutObject(ctxb, "bucket", "object", data, nil, minio.ObjectOptions{})
 				assert.NoError(t, err)
-				assert.Equal(t, 2, lg.LogECount())
+				assert.Equal(t, 0, lg.LogECount())
 
 				prm, err := lg.GetLastLogEParam()
-				assert.NoError(t, err)
+				assert.Error(t, err)
 				assert.Equal(t, nil, prm)
 			},
 
@@ -85,7 +85,7 @@ func TestPutHandler(t *testing.T) {
 
 				_, err = m.PutObject(ctxb, "bucket", "object", data, nil, minio.ObjectOptions{})
 				assert.Equal(t, testError, err)
-				assert.Equal(t, 2, lg.LogECount())
+				assert.Equal(t, 0, lg.LogECount())
 			},
 		},
 		{
@@ -105,10 +105,10 @@ func TestPutHandler(t *testing.T) {
 
 				_, err = m.PutObject(ctxc, "bucket", "object", data, nil, minio.ObjectOptions{})
 				assert.NoError(t, err)
-				assert.Equal(t, 2, lg.LogECount())
+				assert.Equal(t, 0, lg.LogECount())
 
 				prm, err := lg.GetLastLogEParam()
-				assert.NoError(t, err)
+				assert.Error(t, err)
 				assert.Equal(t, nil, prm)
 			},
 		},

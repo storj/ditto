@@ -16,6 +16,6 @@ func TestDirChecker(t *testing.T) {
 }
 
 func TestNewDirChecker(t *testing.T) {
-	dchecker := NewDirChecker()
+	dchecker := DirChecker()
 	assert.NotNil(t, dchecker)
 }

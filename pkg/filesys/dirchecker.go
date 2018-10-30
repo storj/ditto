@@ -2,18 +2,8 @@ package filesys
 
 import "os"
 
-type DirChecker interface {
-	CheckIfDir(string) (bool, error)
-}
-
-type osDirChecker func(string) (bool, error)
-
-func NewDirChecker() DirChecker {
+func DirChecker() FsCheckDir {
 	return osDirChecker(CheckIfDir)
-}
-
-func(d osDirChecker) CheckIfDir(lpath string) (bool, error) {
-	return d(lpath)
 }
 
 func CheckIfDir(lpath string) (isDir bool, err error) {

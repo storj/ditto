@@ -3,7 +3,6 @@ package put
 import (
 	"github.com/spf13/cobra"
 	"os"
-	"os/signal"
 	"storj.io/ditto/cmd/utils"
 
 	l "storj.io/ditto/pkg/logger"
@@ -28,9 +27,6 @@ var (
 
 func init() {
 	//TODO: investigate on delayed response
-	sigc = make(chan os.Signal, 1)
-	signal.Notify(sigc, os.Interrupt)
-
 	Cmd.Flags().BoolVarP(&frecursive, "recursive", "r", false, "recursive usage")
 	Cmd.Flags().BoolVarP(&fforce, "force", "f", false, "force usage")
 	Cmd.Flags().StringVarP(&fprefix, "prefix", "p", "", "prefix usage")

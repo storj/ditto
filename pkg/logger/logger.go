@@ -41,6 +41,6 @@ func (l *lg) Write(b []byte) (n int, err error) {
 var StdOutLogger = lg{
 	buffer: os.Stdout,
 	errBuffer: os.Stdout,
-	format: "Log: %s\n",
-	errFormat: "Err: %s\n",
+	format: "%s\n",
+	errFormat: "Err: %s\n",//"\033[31mErr: %s\033[0m\n",
 }
