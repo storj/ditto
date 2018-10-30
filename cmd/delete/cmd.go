@@ -46,11 +46,7 @@ func exec(cmd *cobra.Command, args []string) (err error) {
 	delimiter = "/"
 	var ctx = context.Background()
 
-	p  := prefixFlag
-	rf := recursiveFlag && forceFlag
-	noFlags := !(recursiveFlag && prefixFlag && forceFlag)
-
-	if p {
+	if prefixFlag {
 		objectName, prefix = args[0], args[1]
 	}
 
@@ -58,6 +54,9 @@ func exec(cmd *cobra.Command, args []string) (err error) {
 	if err != nil {
 		return err
 	}
+
+	rf := recursiveFlag && forceFlag
+	noFlags := !(recursiveFlag && prefixFlag && forceFlag)
 
 	switch {
 		case prefixFlag:
@@ -100,11 +99,10 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 		return errors.New(bucketNameInvalidMessage)
 	}
 
-	p  := prefixFlag
 	noFlags := !(recursiveFlag && prefixFlag && forceFlag)
 
 	switch {
-		case p:
+		case prefixFlag:
 
 			if argsLength < 2 {
 				return errors.New(prefixMissingMessage)
