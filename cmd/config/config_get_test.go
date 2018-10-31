@@ -48,13 +48,13 @@ func TestGetValueFromConfigFile(t *testing.T) {
 	tests := []struct {
 		name           string
 		key            string
-		viperInitFunc  func(useDefaults bool) (config *config.Config, err error)
+		viperInitFunc  func() (config *config.Config, err error)
 		expectedResult string
 	}{
 		{
 			name: "Key not set",
 			key:  "a",
-			viperInitFunc: func(useDefaults bool) (config *config.Config, err error) {
+			viperInitFunc: func() (config *config.Config, err error) {
 				viper.Reset()
 				return nil, nil
 			},
@@ -63,7 +63,7 @@ func TestGetValueFromConfigFile(t *testing.T) {
 		{
 			name: "Key exist",
 			key:  "a",
-			viperInitFunc: func(useDefaults bool) (config *config.Config, err error) {
+			viperInitFunc: func() (config *config.Config, err error) {
 				viper.Reset()
 				viper.Set("a", "b")
 				return nil, nil
@@ -74,7 +74,7 @@ func TestGetValueFromConfigFile(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			readConfigMethod = test.viperInitFunc
-			readConfigMethod(false)
+			readConfigMethod()
 			value := getValueFromConfigFile(test.key)
 
 			assert.Equal(t, value, test.expectedResult)
@@ -85,13 +85,13 @@ func TestGetValueFromConfigFile(t *testing.T) {
 func TestExecuteGetCmd(t *testing.T) {
 	tests := []struct {
 		name           string
-		viperInitFunc  func(useDefaults bool) (config *config.Config, err error)
+		viperInitFunc  func() (config *config.Config, err error)
 		args           []string
 		expectedResult string
 	}{
 		{
 			name:"Unsupported key",
-			viperInitFunc: func(useDefaults bool) (config *config.Config, err error) {
+			viperInitFunc: func() (config *config.Config, err error) {
 				viper.Reset()
 
 				return nil, nil
@@ -101,7 +101,7 @@ func TestExecuteGetCmd(t *testing.T) {
 		},
 		{
 			name:"Valid case",
-			viperInitFunc: func(useDefaults bool) (config *config.Config, err error) {
+			viperInitFunc: func() (config *config.Config, err error) {
 				viper.Reset()
 				viper.Set("Server1.Endpoint", "b")
 				return nil, nil

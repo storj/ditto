@@ -55,7 +55,7 @@ func setPredefinedOptions(key string, value string, possibleValues []string) err
 }
 
 func writeConfig(key string, value string) error {
-	config.ReadConfig(false)
+	config.ParseConfig()
 
 	viper.Set(key, value)
 

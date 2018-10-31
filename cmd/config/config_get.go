@@ -20,14 +20,14 @@ var getSubCmd = &cobra.Command{
 }
 
 // Method reference for unit testing
-var readConfigMethod = config.ReadConfig
+var readConfigMethod = config.ParseConfig
 
 func executeGetCmd(cmd *cobra.Command, args []string) error {
 	arg := args[0]
 
-	readConfigMethod(false)
+	readConfigMethod()
 	if containsKey(arg) {
-		fmt.Sprintf("\t%s\n", getValueFromConfigFile(arg))
+		fmt.Printf("\t%s\n", getValueFromConfigFile(arg))
 		return nil
 	} else {
 		return errors.New("Key unsupported")
@@ -51,5 +51,6 @@ func getValueFromConfigFile(key string) string {
 }
 
 func init() {
+	config.ReadConfig(false)
 	Cmd.AddCommand(getSubCmd)
 }

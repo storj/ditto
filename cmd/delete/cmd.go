@@ -8,6 +8,8 @@ import (
 	"errors"
 	"github.com/minio/minio-go/pkg/s3utils"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"storj.io/ditto/pkg/config"
 
 	minio "github.com/minio/minio/cmd"
 	cmdUtils "storj.io/ditto/cmd/utils"
@@ -31,12 +33,26 @@ var (
 	bucketNameInvalidMessage = "bucket name is not valid"
 )
 
+// Flag keys
+var (
+	prefixKey    = "prefix"
+	recursiveKey = "recursive"
+	delimiterKey = "delimiter"
+	forceKey = "force"
+
+	defaultSourceKey    = "default_source"
+	throwImmediatelyKey = "throw_immediately"
+)
+
 //Flags values area
 var (
 	forceFlag     bool
 	recursiveFlag bool
 	prefixFlag    bool
-	delimeterFlag string
+	delimiterFlag string
+
+	defaultSourceFlag    string
+	throwImmediatelyFlag bool
 )
 
 func exec(cmd *cobra.Command, args []string) (err error) {
@@ -86,6 +102,8 @@ func exec(cmd *cobra.Command, args []string) (err error) {
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
+	cmdUtils.LoadFlagValueFromViperIfNotSet(cmd, defaultSourceFlag, config.DELETE_DEFAULT_SOURCE)
+	cmdUtils.LoadFlagValueFromViperIfNotSet(cmd, throwImmediatelyKey, config.DELETE_THROW_IMMEDIATELY)
 
 	argsLength := len(args)
 
@@ -131,11 +149,21 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func init() {
-	Cmd.Flags().BoolVarP(&forceFlag, "force", "f", false,
+	err := config.ReadConfig(true)
+	if err != nil {
+		println("error while reading config file: ", err)
+	}
+
+	Cmd.Flags().BoolVarP(&forceFlag, forceKey, "f", false,
 		"if force flag applied - all files without prefixes in bucket will be removed.")
-	Cmd.Flags().BoolVarP(&recursiveFlag, "recursive", "r", false, "User force flag to delete bucket")
-	Cmd.Flags().BoolVarP(&prefixFlag, "prefix", "p", false, "User force flag to delete bucket")
-	Cmd.Flags().StringVarP(&delimeterFlag, "delimiter", "d", "/", "delimiter usage")
+	Cmd.Flags().BoolVarP(&recursiveFlag, recursiveKey, "r", false, "User force flag to delete bucket")
+	Cmd.Flags().BoolVarP(&prefixFlag, prefixKey, "p", false, "Folder simulation path")
+	Cmd.Flags().StringVarP(&delimiterFlag, delimiterKey,"d", "/", "Char or char sequence that should be used as prefix delimiter")
+	Cmd.Flags().StringVarP(&defaultSourceFlag, defaultSourceKey, "s", "server1", "Defines source server to start from")
+	Cmd.Flags().BoolVarP(&throwImmediatelyFlag, throwImmediatelyKey, "t", true, "in case of error, throw error immediately, or retry from other server")
+
+	viper.BindPFlag(config.DELETE_DEFAULT_SOURCE, Cmd.Flags().Lookup(defaultSourceKey))
+	viper.BindPFlag(config.DELETE_THROW_IMMEDIATELY, Cmd.Flags().Lookup(throwImmediatelyKey))
 }
 
 func deleteRecursive(ctx context.Context, m minio.ObjectLayer, bucketName, prefix, delimiter string) error {

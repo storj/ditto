@@ -13,6 +13,7 @@ import (
 var Cmd = &cobra.Command{
 	Use:   "get [bucket name] [object name](opt) [OPTIONS]",
 	Args: validateArgs,
+	Aliases: []string{"g"},
 	Short: "Download files and buckets",
 	Long: ``,
 	RunE: NewGetExec(utils.GetGateway, &l.StdOutLogger).runE,

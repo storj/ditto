@@ -9,9 +9,8 @@ import (
 
 // Reads config from default config location($HOME/.ditto/config.json or from user-defined location
 // Returns parsed config or error
-func ReadConfig(useDefaults bool) (config *Config, err error) {
-	config, err = parseConfig(useDefaults)
-
+func ParseConfig() (config *Config, err error) {
+	err = viper.Unmarshal(&config)
 	if err != nil {
 		return nil, err
 	}
@@ -29,23 +28,15 @@ func ReadConfig(useDefaults bool) (config *Config, err error) {
 }
 
 // Gather config values and applies default values
-func parseConfig(useDefaults bool) (config *Config, err error) {
-	if viper.IsSet("configPath") {
-		configPath := viper.GetString("configPath")
+func ReadConfig(useDefaults bool) (err error) {
+	viper.SetConfigName("config")
+	viper.AddConfigPath("$HOME/.ditto/")
+	viper.SetConfigType("json")
 
-		viper.SetConfigFile(configPath)
-		// Create empty file if not exist
-		os.OpenFile(configPath, os.O_RDONLY|os.O_CREATE, 0666)
-	} else {
-		viper.SetConfigName("config")
-		viper.AddConfigPath("$HOME/.ditto/")
-		viper.SetConfigType("json")
-
-		// Create empty file if not exist
-		user, err := user.Current()
-		if err == nil {
-			os.OpenFile(user.HomeDir+"/.ditto/config.json", os.O_RDONLY|os.O_CREATE, 0666)
-		}
+	// Create empty file if config file not exist yet
+	user, err := user.Current()
+	if err == nil {
+		os.OpenFile(user.HomeDir+"/.ditto/config.json", os.O_RDONLY|os.O_CREATE, 0666)
 	}
 
 	if useDefaults {
@@ -54,15 +45,10 @@ func parseConfig(useDefaults bool) (config *Config, err error) {
 
 	err = viper.ReadInConfig()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	err = viper.Unmarshal(&config)
-	if err != nil {
-		return nil, err
-	}
-
-	return config, nil
+	return nil
 }
 
 func setDefaults() {
@@ -86,7 +72,7 @@ func setDefaults() {
 
 	// CopyOptions defaults
 	viper.SetDefault(COPY_DEFAULT_SOURCE, "server1")
-	viper.SetDefault(COPY_THROW_IMMEDIATELY, true)
+	viper.SetDefault(COPY_THROW_IMMEDIATELY, false)
 
 	// DeleteOptions defaults
 	viper.SetDefault(DELETE_DEFAULT_SOURCE, "server1")
