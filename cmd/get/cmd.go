@@ -13,8 +13,8 @@ import (
 var Cmd = &cobra.Command{
 	Use:   "get [bucket name] [object name](opt) [OPTIONS]",
 	Args: validateArgs,
+	Short: "Download object and buckets",
 	Aliases: []string{"g"},
-	Short: "Download files and buckets",
 	Long: ``,
 	RunE: NewGetExec(utils.GetGateway, &l.StdOutLogger).runE,
 }
@@ -24,23 +24,23 @@ var (
 	maxArg = 2
 
 	nameFlag string
-	nameUsage = "Path of the file or folder to be downloaded. A raw filename can be used to download to current directory under that name.\n" +
-		"If no objectname provided folder under that name will be created"
+	nameUsage = "Path of the file or folder to be downloaded.\n" +
+		"If no objectname provided folder under that name will be created(Default: current folder)"
 
 	prefixFlag string
-	prefixUsage = ""
+	prefixUsage = "Used to download part of the bucket that contains specified prefix(Default: \"\")"
 
 	delimiterFlag string
-	delimiterUsage = ""
+	delimiterUsage = "separates objnames from prefixes(Default: \"/\")"
 
 	recursiveFlag bool
-	recursiveUsage = ""
+	recursiveUsage = "recursively download content from bucket or prefix"
 
 	forceFlag bool
-	forceUsage = ""
+	forceUsage = "truncates a file if it exists"
 
 	maxKeysFlag int
-	maxKeysUsage = ""
+	maxKeysUsage = "max number of keys list objects returns(Default: 1000)"
 )
 
 func init() {
