@@ -98,7 +98,6 @@ func TestGetBucketInfoHandler(t *testing.T) {
 				assert.NotNil(t, h.primeErr)
 				assert.NotNil(t, h.alterErr)
 				assert.NotNil(t, logErr)
-				assert.Equal(t, "alter failed", logErr.Error())
 				assert.Equal(t, true, isAlterCalled)
 			},
 		},

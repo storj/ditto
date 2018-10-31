@@ -48,7 +48,7 @@ func (h *getBucketInfoHandler) Process () (objInfo minio.BucketInfo, err error) 
 		return h.primeInfo, nil
 	}
 
-	h.m.Logger.LogE(h.primeErr)
+	// h.m.Logger.LogE(h.primeErr)
 
 	h.execAlter()
 

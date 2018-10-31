@@ -10,22 +10,34 @@ import (
 	"github.com/minio/minio-go/pkg/s3utils"
 	minio "github.com/minio/minio/cmd"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	cmdUtils "storj.io/ditto/cmd/utils"
+	"storj.io/ditto/pkg/config"
 	"storj.io/ditto/pkg/utils"
 )
 
 var mirroring = cmdUtils.GetObjectLayer
 var missingArgsErrorMessage = "at least three arguments required."
 
-var Cmd = &cobra.Command {
-	Use: "copy [cp] srcBucket, srcObj, dstBucket, dstObj(OPTIONAL).",
-
-	Args: validateArgs,
-	Short: "Creates a cp of an object.",
-	Long:  "Creates a cp of an object that is already stored in a bucket. dstObj is optional. " +
-		   "If not specified, dstObj name will be as srcObj.",
+var Cmd = &cobra.Command{
+	Use:     "copy [cp] srcBucket, srcObj, dstBucket, dstObj(OPTIONAL).",
+	Aliases: []string{"cp"},
+	Args:    validateArgs,
+	Short:   "Creates a copy of an object.",
+	Long: "Creates a copy of an object that is already stored in a bucket. dstObj is optional. " +
+		"If not specified, dstObj name will be as srcObj.",
 	RunE: exec,
 }
+
+var (
+	defaultSourceKey    = "default_source"
+	throwImmediatelyKey = "throw_immediately"
+)
+
+var (
+	defaultSourceFlag    string
+	throwImmediatelyFlag bool
+)
 
 func exec(cmd *cobra.Command, args []string) error {
 
@@ -35,7 +47,16 @@ func exec(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	objectInfo, _ := objectLayer.GetObjectInfo(ctx, args[0], args[1], minio.ObjectOptions{})
+
+	objectInfo, err := objectLayer.GetObjectInfo(ctx, args[0], args[1], minio.ObjectOptions{})
+	if err != nil {
+		return err
+	}
+
+	_, err = objectLayer.GetBucketInfo(ctx, args[2])
+	if err != nil {
+		return err
+	}
 
 	dstObj := args[1]
 
@@ -43,7 +64,7 @@ func exec(cmd *cobra.Command, args []string) error {
 		dstObj = args[3]
 	}
 
-	//TODO: enable object options in future
+	// TODO: enable object options in future
 	_, err = objectLayer.CopyObject(ctx, args[0], args[1], args[2], dstObj, objectInfo, minio.ObjectOptions{}, minio.ObjectOptions{})
 
 	if err != nil {
@@ -71,7 +92,7 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 				dstObjectNameErr = s3utils.CheckValidObjectName(args[3])
 			}
 
-			err := utils.CombineErrors([]error {
+			err := utils.CombineErrors([]error{
 				utils.NewError(srcBucketNameErr, "srcBucket - "),
 				utils.NewError(dstBucketNameErr, "dstBucket - "),
 				utils.NewError(srcObjectNameErr, "srcObject - "),
@@ -92,5 +113,14 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func init() {
+	err := config.ReadConfig(true)
+	if err != nil {
+		println("error while reading config file: ", err)
+	}
 
+	Cmd.Flags().StringVarP(&defaultSourceFlag, defaultSourceKey, "s", "server2", "Defines source server to display list")
+	Cmd.Flags().BoolVarP(&throwImmediatelyFlag, throwImmediatelyKey, "t", false, "In case of error, throw error immediately, or retry from other server")
+
+	viper.BindPFlag(config.COPY_DEFAULT_SOURCE, Cmd.Flags().Lookup(defaultSourceKey))
+	viper.BindPFlag(config.COPY_THROW_IMMEDIATELY, Cmd.Flags().Lookup(throwImmediatelyKey))
 }

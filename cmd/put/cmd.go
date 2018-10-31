@@ -13,6 +13,7 @@ import (
 var Cmd = &cobra.Command{
 	Use: "put [bucket name] [path to file/folder]",
 	Args:    validateArgs,
+	Aliases: []string{"p"},
 	Short:   "Upload files or file list_cmd to specified bucket",
 	Long:    `Upload files or file list_cmd to specified bucket`,
 	RunE:    NewPutExec(utils.GetGateway, &l.StdOutLogger).runE,

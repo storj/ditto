@@ -1,18 +1,18 @@
 package server
 
 import (
-	"github.com/spf13/cobra"
 	minio "github.com/minio/minio/cmd"
+	"github.com/spf13/cobra"
 )
 
 var Cmd = &cobra.Command{
-	Use: "server",
-
-	Args:  nil,
-	Short: "Upload files or file list_cmd to specified bucket",
+	Use:     "server",
+	Aliases: []string{"s"},
+	Args:    nil,
+	Short:   "Upload files or file list_cmd to specified bucket",
 	PreRunE: preRunE,
-	Long: `Upload files or file list_cmd to specified bucket`,
-	Run:  run,
+	Long:    `Upload files or file list_cmd to specified bucket`,
+	Run:     run,
 }
 
 func preRunE(cmd *cobra.Command, args []string) error {

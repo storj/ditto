@@ -2,41 +2,23 @@ package utils
 
 import (
 	"github.com/minio/minio/pkg/auth"
-	"os"
 	"strings"
 
 	"storj.io/ditto/pkg/config"
 	"storj.io/ditto/pkg/gateway"
 
-	l "storj.io/ditto/pkg/logger"
 	minio "github.com/minio/minio/cmd"
+	l "storj.io/ditto/pkg/logger"
 )
 
-func FileOrDirExists(path string) (bool, error) {
-	_, err := os.Stat(path)
-
-	if err == nil {
-		//fmt.Printf("Name: %s, isDir: %t", r.Name(), r.IsDir())
-		return true, nil
-	}
-
-	if os.IsNotExist(err) {
-
-		return false, nil
-	}
-
-	return true, err
-}
-
-//TODO: implement
 func GetObjectLayer() (minio.ObjectLayer, error) {
-	defaultConfig, err := config.ReadConfig(true)
+	config, err := config.ParseConfig()
 	if err != nil {
 		return nil, err
 	}
 
 	logger := l.StdOutLogger
-	mirroring := &gateway.Mirroring{Logger: &logger, Config: defaultConfig}
+	mirroring := &gateway.Mirroring{Logger: &logger, Config: config}
 	objLayer, err := mirroring.NewGatewayLayer(auth.Credentials{})
 
 	if err != nil {
@@ -49,11 +31,10 @@ func GetObjectLayer() (minio.ObjectLayer, error) {
 type GetwayResolver func(l.Logger) (minio.Gateway, error)
 
 func GetGateway(logger l.Logger) (minio.Gateway, error) {
-	defaultConfig, err := config.ReadConfig(true)
+	defaultConfig, err := config.ParseConfig()
 	if err != nil {
 		return nil, err
 	}
-
 	return &gateway.Mirroring{Logger: logger, Config: defaultConfig}, nil
 }
 

@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"errors"
+	"fmt"
 	"github.com/minio/cli"
 	"github.com/minio/minio/pkg/auth"
 	"storj.io/ditto/pkg/config"
@@ -25,7 +26,21 @@ func init() {
 }
 
 func mirroringGatewayMain(ctx *cli.Context) {
-	minio.StartGateway(ctx, &Mirroring{})
+	err := config.ReadConfig(true)
+	if err != nil {
+		fmt.Println("error reading config")
+	}
+	config, err := config.ParseConfig()
+	if err != nil {
+		return
+	}
+
+	if err != nil {
+		println("error while opening Gateway", err)
+		return
+	}
+
+	minio.StartGateway(ctx, &Mirroring{Logger: &l.StdOutLogger, Config: config})
 }
 
 // Mirroring for mirroring service
