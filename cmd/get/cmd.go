@@ -23,15 +23,15 @@ var (
 	minArg = 1
 	maxArg = 2
 
-	nameFlag string
-	nameUsage = "Path of the file or folder to be downloaded.\n" +
-		"If no objectname provided folder under that name will be created(Default: current folder)"
+	locationFlag string
+	locationFlagUsage = "Path of the file or folder to be downloaded.\n" +
+		"If no objectname provided folder under that name will be created"
 
 	prefixFlag string
-	prefixUsage = "Used to download part of the bucket that contains specified prefix(Default: \"\")"
+	prefixUsage = "Used to download part of the bucket that contains specified prefix"
 
 	delimiterFlag string
-	delimiterUsage = "separates objnames from prefixes(Default: \"/\")"
+	delimiterUsage = "separates objnames from prefixes"
 
 	recursiveFlag bool
 	recursiveUsage = "recursively download content from bucket or prefix"
@@ -40,14 +40,14 @@ var (
 	forceUsage = "truncates a file if it exists"
 
 	maxKeysFlag int
-	maxKeysUsage = "max number of keys list objects returns(Default: 1000)"
+	maxKeysUsage = "max number of keys list objects returns"
 )
 
 func init() {
-	Cmd.Flags().StringVarP(&nameFlag, "name", "n", "", nameUsage)
+	Cmd.Flags().StringVarP(&locationFlag, "location", "l", "", locationFlagUsage)
 	Cmd.Flags().StringVarP(&prefixFlag, "prefix", "p", "", prefixUsage)
-	Cmd.Flags().StringVarP(&delimiterFlag, "delimiter", "d", "/", prefixUsage)
+	Cmd.Flags().StringVarP(&delimiterFlag, "delimiter", "d", "/", delimiterUsage)
 	Cmd.Flags().BoolVarP(&recursiveFlag, "recursive", "r", false, recursiveUsage)
 	Cmd.Flags().BoolVarP(&forceFlag, "force", "f", false, forceUsage)
-	Cmd.Flags().IntVarP(&maxKeysFlag, "keys", "k", 1000, forceUsage)
+	Cmd.Flags().IntVarP(&maxKeysFlag, "keys", "k", 1000, maxKeysUsage)
 }

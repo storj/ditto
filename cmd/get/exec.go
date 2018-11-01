@@ -36,7 +36,7 @@ func (e *getExec) runE(cmd *cobra.Command, args []string) (err error) {
 	ctx := context.Background()
 	getCtx := &dcontext.GetContext{
 		ctx,
-		filepath.Clean(nameFlag),
+		filepath.Clean(locationFlag),
 		prefixFlag,
 		delimiterFlag,
 		recursiveFlag,

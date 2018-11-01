@@ -31,5 +31,5 @@ func init() {
 	Cmd.Flags().BoolVarP(&frecursive, "recursive", "r", false, "recursively upload contents of the specified folder")
 	Cmd.Flags().BoolVarP(&fforce, "force", "f", false, "truncate object if one exists")
 	Cmd.Flags().StringVarP(&fprefix, "prefix", "p", "", "root prefix")
-	Cmd.Flags().StringVarP(&fdelimiter, "delimiter", "d", "/", "separates objnames from prefixes(Default value: \"/\")")
+	Cmd.Flags().StringVarP(&fdelimiter, "delimiter", "d", "/", "separates objnames from prefixes")
 }
