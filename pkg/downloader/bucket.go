@@ -54,7 +54,7 @@ func GetPrefix(ctx *context.GetContext, bucket, prefix string, downloader MinioD
 			continue
 		}
 
-		logger.Log(fmt.Sprintf("Found new prefix %s, set -r flag to download it", pref))
+		logger.Log(fmt.Sprintf("Found new prefix %s, missing -r flag to download it recursively", pref))
 	}
 
 	return nil
@@ -78,7 +78,7 @@ func downloadObjects(ctx *context.GetContext, objects []minio.ObjectInfo, downlo
 			continue
 		}
 
-		logger.Log(fmt.Sprintf("%s downloaded successfully", name))
+		logger.Log(fmt.Sprintf("successfully downloaded %s", name))
 	}
 
 	return nil
