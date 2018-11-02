@@ -89,6 +89,7 @@ require (
 	github.com/spf13/pflag v1.0.2
 	github.com/spf13/viper v1.2.1
 	github.com/streadway/amqp v0.0.0-20180806233856-70e15c650864
+	github.com/stretchr/testify v1.2.2
 	github.com/tidwall/gjson v0.0.0-20181028154604-081192fa2e47
 	github.com/tidwall/match v0.0.0-20171002075945-1731857f09b1
 	github.com/tidwall/sjson v1.0.2
