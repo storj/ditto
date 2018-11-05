@@ -1,10 +1,8 @@
 .vscode/
 .idea/
 
-vendor/
 
 debug
-glide.lock
 .vimrc
 cover.html
 cover.out
