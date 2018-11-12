@@ -2,11 +2,11 @@ package uploader
 
 import (
 	"path"
-	"storj.io/ditto/cmd/utils"
-	l "storj.io/ditto/pkg/logger"
-	"storj.io/ditto/pkg/context"
+	"storj/ditto/cmd/utils"
+	l "storj/ditto/pkg/logger"
+	"storj/ditto/pkg/context"
 	minio "github.com/minio/minio/cmd"
-	"storj.io/ditto/pkg/filesys"
+	"storj/ditto/pkg/filesys"
 	"fmt"
 )
 

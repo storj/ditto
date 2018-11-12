@@ -5,7 +5,7 @@ import (
 	minio "github.com/minio/minio/cmd"
 	"github.com/minio/minio/pkg/hash"
 	"io"
-	l "storj.io/ditto/pkg/logger"
+	l "storj/ditto/pkg/logger"
 )
 
 type asyncHandler struct {

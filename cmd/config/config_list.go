@@ -6,7 +6,7 @@ package config
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"storj.io/ditto/pkg/config"
+	"storj/ditto/pkg/config"
 )
 
 var listSubCmd = &cobra.Command{

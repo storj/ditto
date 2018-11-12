@@ -5,8 +5,8 @@ import (
 	minio "github.com/minio/minio/cmd"
 	"github.com/minio/minio/pkg/hash"
 	"io"
-	"storj.io/ditto/pkg/config"
-	l "storj.io/ditto/pkg/logger"
+	"storj/ditto/pkg/config"
+	l "storj/ditto/pkg/logger"
 )
 
 //MirroringObjectLayer is

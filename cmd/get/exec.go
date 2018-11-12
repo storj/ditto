@@ -6,11 +6,11 @@ import (
 	"github.com/minio/minio/pkg/auth"
 	"github.com/spf13/cobra"
 	"path/filepath"
-	"storj.io/ditto/cmd/utils"
-	dcontext "storj.io/ditto/pkg/context"
-	"storj.io/ditto/pkg/downloader"
-	"storj.io/ditto/pkg/filesys"
-	"storj.io/ditto/pkg/logger"
+	"storj/ditto/cmd/utils"
+	dcontext "storj/ditto/pkg/context"
+	"storj/ditto/pkg/downloader"
+	"storj/ditto/pkg/filesys"
+	"storj/ditto/pkg/logger"
 )
 
 func NewGetExec(resolver utils.GetwayResolver, lg logger.Logger) *getExec {

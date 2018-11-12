@@ -2,7 +2,7 @@ package uploader
 
 import (
 	"testing"
-	tutils "storj.io/ditto/pkg/utils/testing_utils"
+	tutils "storj/ditto/pkg/utils/testing_utils"
 	"github.com/minio/minio/pkg/hash"
 	minio "github.com/minio/minio/cmd"
 	"context"

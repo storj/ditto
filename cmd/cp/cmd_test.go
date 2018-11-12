@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 
-	test "storj.io/ditto/pkg/utils/testing_utils"
+	test "storj/ditto/pkg/utils/testing_utils"
 )
 
 func TestValidateArgs(t *testing.T) {

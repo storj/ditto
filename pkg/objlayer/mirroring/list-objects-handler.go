@@ -5,10 +5,10 @@ package mirroring
 
 import (
 	"context"
-	"storj.io/ditto/pkg/utils"
+	"storj/ditto/pkg/utils"
 
 	minio "github.com/minio/minio/cmd"
-	l "storj.io/ditto/pkg/logger"
+	l "storj/ditto/pkg/logger"
 )
 
 func NewListObjectsHandler(m   *MirroringObjectLayer,

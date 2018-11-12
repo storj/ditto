@@ -4,7 +4,7 @@
 package main
 
 import (
-	"storj.io/ditto/cmd"
+	"storj/ditto/cmd"
 )
 
 func main() {

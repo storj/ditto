@@ -5,7 +5,7 @@ package logger
 
 import (
 	"github.com/stretchr/testify/assert"
-	"storj.io/ditto/pkg/models"
+	"storj/ditto/pkg/models"
 	"testing"
 )
 

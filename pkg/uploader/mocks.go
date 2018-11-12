@@ -1,7 +1,7 @@
 package uploader
 
 import (
-	"storj.io/ditto/pkg/context"
+	"storj/ditto/pkg/context"
 	minio "github.com/minio/minio/cmd"
 	"time"
 )

@@ -3,9 +3,9 @@ package put
 import (
 	"github.com/spf13/cobra"
 	"os"
-	"storj.io/ditto/cmd/utils"
+	"storj/ditto/cmd/utils"
 
-	l "storj.io/ditto/pkg/logger"
+	l "storj/ditto/pkg/logger"
 )
 
 

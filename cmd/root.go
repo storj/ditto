@@ -5,15 +5,15 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"storj.io/ditto/cmd/config"
-	"storj.io/ditto/cmd/cp"
-	"storj.io/ditto/cmd/delete"
-	"storj.io/ditto/cmd/get"
-	"storj.io/ditto/cmd/list"
-	"storj.io/ditto/cmd/mb"
-	"storj.io/ditto/cmd/put"
-	"storj.io/ditto/cmd/server"
-	"storj.io/ditto/cmd/version"
+	"storj/ditto/cmd/config"
+	"storj/ditto/cmd/cp"
+	"storj/ditto/cmd/delete"
+	"storj/ditto/cmd/get"
+	"storj/ditto/cmd/list"
+	"storj/ditto/cmd/mb"
+	"storj/ditto/cmd/put"
+	"storj/ditto/cmd/server"
+	"storj/ditto/cmd/version"
 )
 
 // RootCmd represents the base command when called without any subcommands

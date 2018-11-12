@@ -4,10 +4,10 @@ import (
 	"fmt"
 	minio "github.com/minio/minio/cmd"
 	"path/filepath"
-	"storj.io/ditto/cmd/utils"
-	"storj.io/ditto/pkg/context"
-	"storj.io/ditto/pkg/filesys"
-	"storj.io/ditto/pkg/logger"
+	"storj/ditto/cmd/utils"
+	"storj/ditto/pkg/context"
+	"storj/ditto/pkg/filesys"
+	"storj/ditto/pkg/logger"
 	"strings"
 )
 

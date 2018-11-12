@@ -7,12 +7,12 @@ import (
 	"context"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"storj.io/ditto/pkg/config"
-	"storj.io/ditto/pkg/utils"
+	"storj/ditto/pkg/config"
+	"storj/ditto/pkg/utils"
 	"testing"
 
 	minio "github.com/minio/minio/cmd"
-	test "storj.io/ditto/pkg/utils/testing_utils"
+	test "storj/ditto/pkg/utils/testing_utils"
 )
 
 func TestListObjectsHandler(t *testing.T) {

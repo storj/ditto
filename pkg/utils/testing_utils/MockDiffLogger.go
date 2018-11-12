@@ -3,7 +3,7 @@
 
 package testing_utils
 
-import "storj.io/ditto/pkg/models"
+import "storj/ditto/pkg/models"
 
 type MockDiffLogger struct {
 	MockLogger

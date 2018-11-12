@@ -4,7 +4,7 @@
 package logger
 
 import (
-	"storj.io/ditto/pkg/models"
+	"storj/ditto/pkg/models"
 )
 
 type DiffLogger interface {

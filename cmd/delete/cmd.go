@@ -9,10 +9,10 @@ import (
 	"github.com/minio/minio-go/pkg/s3utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"storj.io/ditto/pkg/config"
+	"storj/ditto/pkg/config"
 
 	minio "github.com/minio/minio/cmd"
-	cmdUtils "storj.io/ditto/cmd/utils"
+	cmdUtils "storj/ditto/cmd/utils"
 )
 
 var mirroring = cmdUtils.GetObjectLayer

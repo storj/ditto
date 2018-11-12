@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"github.com/minio/cli"
 	"github.com/minio/minio/pkg/auth"
-	"storj.io/ditto/pkg/config"
-	"storj.io/ditto/pkg/objlayer/mirroring"
+	"storj/ditto/pkg/config"
+	"storj/ditto/pkg/objlayer/mirroring"
 
 	minio "github.com/minio/minio/cmd"
-	l "storj.io/ditto/pkg/logger"
-	s3 "storj.io/ditto/pkg/objlayer/s3compat"
+	l "storj/ditto/pkg/logger"
+	s3 "storj/ditto/pkg/objlayer/s3compat"
 )
 
 func init() {

@@ -3,7 +3,7 @@
 
 package config
 
-import "storj.io/ditto/pkg/config"
+import "storj/ditto/pkg/config"
 
 func containsKey(key string) bool {
 	for _, value := range config.GetKeysArray() {

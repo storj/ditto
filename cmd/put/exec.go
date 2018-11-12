@@ -8,11 +8,11 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
-	"storj.io/ditto/cmd/utils"
-	dcontext "storj.io/ditto/pkg/context"
-	fsystem "storj.io/ditto/pkg/filesys"
-	l "storj.io/ditto/pkg/logger"
-	"storj.io/ditto/pkg/uploader"
+	"storj/ditto/cmd/utils"
+	dcontext "storj/ditto/pkg/context"
+	fsystem "storj/ditto/pkg/filesys"
+	l "storj/ditto/pkg/logger"
+	"storj/ditto/pkg/uploader"
 )
 
 type putExec struct {

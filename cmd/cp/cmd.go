@@ -11,9 +11,9 @@ import (
 	minio "github.com/minio/minio/cmd"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	cmdUtils "storj.io/ditto/cmd/utils"
-	"storj.io/ditto/pkg/config"
-	"storj.io/ditto/pkg/utils"
+	cmdUtils "storj/ditto/cmd/utils"
+	"storj/ditto/pkg/config"
+	"storj/ditto/pkg/utils"
 )
 
 var mirroring = cmdUtils.GetObjectLayer

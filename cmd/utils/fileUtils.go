@@ -4,11 +4,11 @@ import (
 	"github.com/minio/minio/pkg/auth"
 	"strings"
 
-	"storj.io/ditto/pkg/config"
-	"storj.io/ditto/pkg/gateway"
+	"storj/ditto/pkg/config"
+	"storj/ditto/pkg/gateway"
 
 	minio "github.com/minio/minio/cmd"
-	l "storj.io/ditto/pkg/logger"
+	l "storj/ditto/pkg/logger"
 )
 
 func GetObjectLayer() (minio.ObjectLayer, error) {

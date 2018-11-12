@@ -3,7 +3,7 @@
 
 package config
 
-import "storj.io/ditto/pkg/config"
+import "storj/ditto/pkg/config"
 
 var argsMap = map[string][]string{
 	config.SERVER_1_ENDPOINT:                 {},
