@@ -5,9 +5,9 @@ package mirroring
 
 import (
 	"context"
-	"storj.io/ditto/pkg/utils"
+	"storj/ditto/pkg/utils"
 
-	l "storj.io/ditto/pkg/logger"
+	l "storj/ditto/pkg/logger"
 	minio "github.com/minio/minio/cmd"
 )
 

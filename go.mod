@@ -1,4 +1,4 @@
-module storj.io/ditto
+module storj/ditto
 
 require (
 	github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973

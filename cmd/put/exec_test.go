@@ -6,10 +6,10 @@ import (
 	minio "github.com/minio/minio/cmd"
 	"github.com/stretchr/testify/assert"
 	"os"
-	fsystem "storj.io/ditto/pkg/filesys"
-	"storj.io/ditto/pkg/logger"
-	"storj.io/ditto/pkg/uploader"
-	tutils "storj.io/ditto/pkg/utils/testing_utils"
+	fsystem "storj/ditto/pkg/filesys"
+	"storj/ditto/pkg/logger"
+	"storj/ditto/pkg/uploader"
+	tutils "storj/ditto/pkg/utils/testing_utils"
 	"testing"
 )
 

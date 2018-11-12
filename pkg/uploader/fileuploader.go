@@ -2,12 +2,12 @@ package uploader
 
 import (
 	"fmt"
-	"storj.io/ditto/cmd/utils"
+	"storj/ditto/cmd/utils"
 	"context"
 	"errors"
 	minio "github.com/minio/minio/cmd"
-	dcontext "storj.io/ditto/pkg/context"
-	"storj.io/ditto/pkg/filesys"
+	dcontext "storj/ditto/pkg/context"
+	"storj/ditto/pkg/filesys"
 )
 
 func checkObj(ctx context.Context, ol minio.ObjectLayer, bucket, object string) error {

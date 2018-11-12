@@ -2,7 +2,7 @@ package utils
 
 import (
 	minio "github.com/minio/minio/cmd"
-	"storj.io/ditto/pkg/models"
+	"storj/ditto/pkg/models"
 )
 
 //ListBucketsWithDifference used to show different and common elements in 2 []minio.DiffModel slices

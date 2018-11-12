@@ -3,7 +3,7 @@ package downloader
 import (
 	"context"
 	minio "github.com/minio/minio/cmd"
-	"storj.io/ditto/pkg/filesys"
+	"storj/ditto/pkg/filesys"
 )
 
 type FileDownloader interface {

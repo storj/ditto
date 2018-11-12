@@ -1,12 +1,12 @@
-// Copyright (C) 2018 Storj Labs, Inc.l "storj.io/ditto/pkg/logger"
+// Copyright (C) 2018 Storj Labs, Inc.l "storj/ditto/pkg/logger"
 // See LICENSE for copying information.
 
 package get
 
 import (
 	"github.com/spf13/cobra"
-	"storj.io/ditto/cmd/utils"
-	l "storj.io/ditto/pkg/logger"
+	"storj/ditto/cmd/utils"
+	l "storj/ditto/pkg/logger"
 )
 
 // getCmd represents the get command

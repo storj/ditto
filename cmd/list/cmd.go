@@ -11,8 +11,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"net/url"
-	"storj.io/ditto/cmd/utils"
-	"storj.io/ditto/pkg/config"
+	"storj/ditto/cmd/utils"
+	"storj/ditto/pkg/config"
 )
 
 // Function listed as var for testing purposes only

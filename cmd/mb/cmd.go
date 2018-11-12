@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"github.com/minio/minio-go/pkg/s3utils"
 	"github.com/spf13/cobra"
-	"storj.io/ditto/cmd/utils"
-	"storj.io/ditto/pkg/config"
+	"storj/ditto/cmd/utils"
+	"storj/ditto/pkg/config"
 )
 
 var mirroring = utils.GetObjectLayer

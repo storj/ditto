@@ -2,7 +2,7 @@ package mirroring
 
 import (
 	"testing"
-	tutils "storj.io/ditto/pkg/utils/testing_utils"
+	tutils "storj/ditto/pkg/utils/testing_utils"
 	"errors"
 	minio "github.com/minio/minio/cmd"
 	"context"

@@ -7,7 +7,7 @@ import (
 	"github.com/magiconair/properties/assert"
 	"github.com/spf13/viper"
 	"go.etcd.io/etcd/pkg/testutil"
-	"storj.io/ditto/pkg/config"
+	"storj/ditto/pkg/config"
 	"testing"
 )
 

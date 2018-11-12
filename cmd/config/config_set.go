@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"storj.io/ditto/pkg/config"
+	"storj/ditto/pkg/config"
 )
 
 var setSubCmd = &cobra.Command{
