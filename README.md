@@ -429,6 +429,37 @@ $ ditto config get ListOptions.DefaultOptions.DefaultSource
 
 ### Server usage
 
+Server command gives you an ability to run Ditto as standalone S3 backend. All actions you made to Ditto S3 backed will be replicated to your backends, you've set up earlier.
+
+```
+Note!
+You need to set up Server1 and Server2 credentials at config file.(See first paragraph of usage description)
+```
+
+##### Examples
+
+- Run Ditto server
+```bash 
+$ ditto server
+
+Endpoint:  http://192.168.1.112:9000  http://127.0.0.1:9000
+AccessKey: ***here_goes_your_access_key***
+SecretKey: ***here_goes_your_secret_key***
+
+Browser Access:
+   http://192.168.1.112:9000  http://127.0.0.1:9000
+
+Command-line Access: https://docs.minio.io/docs/minio-client-quickstart-guide
+   $ mc config host add my http://192.168.1.112:9000 ***here_goes_your_access_key*** ***here_goes_your_secret_key***
+
+Object API (Amazon S3 compatible):
+   Go:         https://docs.minio.io/docs/golang-client-quickstart-guide
+   Java:       https://docs.minio.io/docs/java-client-quickstart-guide
+   Python:     https://docs.minio.io/docs/python-client-quickstart-guide
+   JavaScript: https://docs.minio.io/docs/javascript-client-quickstart-guide
+   .NET:       https://docs.minio.io/docs/dotnet-client-quickstart-guid
+```
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
