@@ -1,3 +1,0 @@
-1. Clone this repository.
-2. Install go 1.11 or newer
-2. Run `go install ./...`
