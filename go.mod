@@ -62,7 +62,7 @@ require (
 	github.com/minio/minio-go v6.0.9+incompatible
 	github.com/minio/sha256-simd v0.0.0-20181005183134-51976451ce19
 	github.com/minio/sio v0.0.0-20180327104954-6a41828a60f0
-	github.com/mitchellh/go-homedir v1.0.0
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/nats-io/go-nats v0.0.0-20181102171637-507e5b380dc7
 	github.com/nats-io/go-nats-streaming v0.0.0-20181018175242-177e97d75532
@@ -113,3 +113,7 @@ require (
 )
 
 go 1.13
+
+replace github.com/coreos/etcd v3.3.10+incompatible => github.com/etcd-io/etcd v3.3.10+incompatible
+
+replace github.com/hashicorp/go-rootcerts v0.0.0-20160503143440-6bb64b370b90 => github.com/hashicorp/go-rootcerts v1.0.2
