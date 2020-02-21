@@ -99,9 +99,9 @@ require (
 	go.uber.org/atomic v1.3.2
 	go.uber.org/multierr v1.1.0
 	go.uber.org/zap v1.9.1
-	golang.org/x/crypto v0.0.0-20181030102418-4d3f4d9ffa16
-	golang.org/x/net v0.0.0-20181102091132-c10e9556a7bc
-	golang.org/x/sys v0.0.0-20181031143558-9b800f95dbbc
+	golang.org/x/crypto v0.0.0-20200220183623-bac4c82f6975
+	golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3
+	golang.org/x/sys v0.0.0-20190412213103-97732733099d
 	golang.org/x/text v0.3.0
 	golang.org/x/time v0.0.0-20180412165947-fbb02b2291d2
 	google.golang.org/appengine v1.3.0
@@ -111,3 +111,5 @@ require (
 	gopkg.in/olivere/elastic.v5 v5.0.76
 	gopkg.in/yaml.v2 v2.2.1
 )
+
+go 1.13
