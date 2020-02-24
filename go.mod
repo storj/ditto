@@ -76,6 +76,7 @@ require (
 	github.com/valyala/tcplisten v0.0.0-20161114210144-ceec8f93295a // indirect
 	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2 // indirect
 	go.etcd.io/etcd v0.0.0-20181031231232-83304cfc808c
+	golang.org/x/crypto v0.0.0-20200220183623-bac4c82f6975 // indirect
 	google.golang.org/genproto v0.0.0-20190404172233-64821d5d2107 // indirect
 	google.golang.org/grpc v1.23.0 // indirect
 	gopkg.in/Shopify/sarama.v1 v1.19.0 // indirect
